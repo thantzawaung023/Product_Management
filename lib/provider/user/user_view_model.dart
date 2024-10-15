@@ -158,14 +158,14 @@ class UserViewModel extends StateNotifier<UserState> {
 
   Future<void> deleteUsers(Set<String> users) async {
     try {
-      await _userRepository.deleteUser(users);
+      await _userRepository.deleteMultiUsers(users);
     } catch (error) {
       logger.e('Error during delete: $error');
       throw Exception('Failed to delete user: $error');
     }
   }
 
-  // Stream<UserEntity?> getUser(String id) {
+  // Stream<User?> getUser(String id) {
   //   try {
   //     return _userRepository.getUser(id);
   //   } on Exception catch (error) {
@@ -237,6 +237,18 @@ class UserViewModel extends StateNotifier<UserState> {
       }
     } catch (error) {
       logger.e('Error updating address: $error');
+      rethrow;
+    }
+  }
+
+  Future<void> changePassword(
+      {required String oldPassword, required String newPassword}) async {
+    try {
+      await _userRepository.changePassword(
+          oldPassword: oldPassword.trim(), newPassword: newPassword.trim());
+      logger.d('Password changed successfully');
+    } catch (error) {
+      logger.e('Error changing password: $error');
       rethrow;
     }
   }

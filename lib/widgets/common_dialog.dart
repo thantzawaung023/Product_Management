@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:product_management/presentation/profile/user_profile.dart';
 import 'package:product_management/utils/extensions/exception_msg.dart';
+import 'package:product_management/widgets/custom_text_field.dart';
 
 Future<bool> showConfirmDialog({
   required BuildContext context,
@@ -169,4 +171,132 @@ Future<void> showCustomDialogForm({
           },
         );
       });
+}
+
+Future<void> accountDeleteConfirmationDialog({
+  required BuildContext context,
+  required String title,
+  required String message,
+  required VoidCallback? okFunction,
+  String? okButton,
+  bool password = false,
+  TextEditingController? passwordController,
+  bool? isPasswordVisible,
+  required String cancelButton,
+}) async {
+  await showDialog<void>(
+    context: context,
+    builder: (
+      BuildContext context,
+    ) {
+      final formKey = GlobalKey<FormState>();
+      return Form(
+        key: formKey,
+        child: AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          contentPadding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const Gap(10),
+                Text(
+                  message,
+                  style: const TextStyle(
+                    fontSize: 16,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                if (password)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 15, bottom: 5),
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Please enter your password to continue.',
+                          style: TextStyle(
+                            fontSize: 13,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const Gap(5),
+                        CustomTextField(
+                          label: 'Password ',
+                          isRequired: true,
+                          controller: passwordController!,
+                          obscured: true,
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            Row(
+              children: [
+                Expanded(
+                  child: DecoratedBox(
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        top: BorderSide(color: Colors.white30),
+                        right: BorderSide(color: Colors.white30),
+                      ),
+                    ),
+                    child: TextButton(
+                      child: Text(
+                        cancelButton,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.lightGreen,
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
+                ),
+                if (okButton != null && okButton.isNotEmpty)
+                  Expanded(
+                    child: DecoratedBox(
+                      decoration: const BoxDecoration(
+                        border: Border(
+                          top: BorderSide(color: Colors.white30),
+                        ),
+                      ),
+                      child: TextButton(
+                        child: Text(
+                          okButton,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.red,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        onPressed: () async {
+                          if (formKey.currentState!.validate()) {
+                            Navigator.of(context).pop();
+                            okFunction!();
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+              ],
+            )
+          ],
+        ),
+      );
+    },
+  );
 }

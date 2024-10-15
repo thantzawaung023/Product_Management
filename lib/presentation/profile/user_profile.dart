@@ -12,7 +12,6 @@ import 'package:product_management/utils/extensions/exception_msg.dart';
 import 'package:product_management/utils/storage/provider_setting.dart';
 import 'package:product_management/widgets/common_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
-import 'package:collection/collection.dart';
 
 class UserProfilePage extends HookConsumerWidget {
   const UserProfilePage({super.key, required this.userId});

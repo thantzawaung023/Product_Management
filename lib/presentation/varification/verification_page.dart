@@ -1,11 +1,12 @@
 import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:product_management/config/config.dart';
+import 'package:product_management/config/app.dart';
+import 'package:product_management/presentation/login/login_page.dart';
 import 'package:product_management/provider/authentication/auth_view_model.dart';
-import 'package:product_management/utils/utils.dart';
-import 'package:product_management/widgets/widgets.dart';
+import 'package:product_management/utils/constants/messages.dart';
+import 'package:product_management/widgets/common_dialog.dart';
 
 class EmailVerificationPage extends ConsumerStatefulWidget {
   const EmailVerificationPage({super.key});
@@ -31,16 +32,12 @@ class EmailVerificationPageState extends ConsumerState<EmailVerificationPage> {
     _verificationCheckTimer =
         Timer.periodic(const Duration(seconds: 5), (timer) async {
       final authViewModel = ref.read(authNotifierProvider.notifier);
-      bool isverified = await authViewModel.checkEmailVerified();
-      if (isverified) {
+      bool isVerified = await authViewModel.checkEmailVerification();
+      if (isVerified) {
         timer.cancel();
         if (mounted) {
-          final authUser = FirebaseAuth.instance.currentUser!;
-
           Navigator.of(context).pushAndRemoveUntil<void>(
-            MaterialPageRoute(
-              builder: (context) => HomePage(userId: authUser.uid),
-            ),
+            MaterialPageRoute(builder: (context) => const MyApp()),
             (route) => false,
           );
         }
@@ -89,26 +86,27 @@ class EmailVerificationPageState extends ConsumerState<EmailVerificationPage> {
               ),
             const SizedBox(height: 40),
             ElevatedButton(
-              onPressed: () {
-                authViewModel.sendVerificationEmail();
-                showSnackBar(context, 'Verification email sent.');
-              },
+              onPressed: authState.isLoading
+                  ? null // Disable button while loading
+                  : () async {
+                      await authViewModel.sendVerificationEmail();
+                      showSnackBar(context, 'Verification email sent.');
+                    },
               child: const Text('Resend Verification Email'),
             ),
             ElevatedButton(
               onPressed: () async {
-                bool isverified = await authViewModel.checkEmailVerified();
-                if (isverified && context.mounted) {
+                bool isVerified = await authViewModel.checkEmailVerified();
+                if (isVerified && context.mounted) {
                   showSnackBar(context, Messages.verificationSuccess);
-                  final authUser = FirebaseAuth.instance.currentUser!;
                   Navigator.of(context).pushAndRemoveUntil<void>(
-                    MaterialPageRoute(
-                      builder: (context) => HomePage(userId: authUser.uid),
-                    ),
+                    MaterialPageRoute(builder: (context) => const MyApp()),
                     (route) => false,
                   );
                 } else if (authState.errorMsg.isNotEmpty && context.mounted) {
                   showSnackBar(context, authState.errorMsg);
+                  authViewModel
+                      .clearErrorMessage(); // Clear error after showing it
                 }
               },
               child: const Text('Check Verification Status'),

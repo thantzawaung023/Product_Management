@@ -27,8 +27,9 @@ abstract class BaseUserRepository {
   Future<void> register(User user);
   Future<void> sendEmailVerification();
   Stream<List<User>> fetchUserList();
-  Future<void> singOut();
-  Future<void> deleteUser(Set<String> users);
+  Future<void> signOut();
+  Future<void> deleteMultiUsers(Set<String> users);
+  Future<void> deleteUser({required String userId});
   Stream<User> getUser({required String userId});
   Future<void> updateUser(User user);
   Future<String> uploadProfile(
@@ -48,6 +49,8 @@ abstract class BaseUserRepository {
     required String addressName,
     required String addressLocation,
   });
+  Future<void> changePassword(
+      {required String oldPassword, required String newPassword});
 }
 
 // Provider
@@ -123,28 +126,7 @@ class UserRepositoryImpl implements BaseUserRepository {
 
       // Save provider type in local settings
       await CurrentProviderSetting().update(providerId: 'password');
-      // Sign out after successful sign-up(to email verification)
-      // await singOut();
 
-      // Check if user creation was successful
-      // if (userCredential.user != null) {
-      //   // Store the user data in Firestore using the UID as the document ID
-      //   User updatedUserEntity =
-      //       userEntity.copyWith(id: userCredential.user!.uid);
-
-      //   try {
-      //     // Add user data to Firestore
-      //     await _dbUser
-      //         .doc(userCredential.user!.uid)
-      //         .set(updatedUserEntity.toJson());
-      //   } catch (firestoreError) {
-      //     // Rollback if Firestore transaction fails
-      //     await userCredential.user!
-      //         .delete(); // Delete user from Firebase Authentication
-      //     return Future.error(
-      //         'Failed to store user data in Firestore. Rolling back registration.');
-      //   }
-      // }
     } on auth.FirebaseAuthException catch (error) {
       // Step 6: Handle FirebaseAuth-specific errors
       logger.e('Error registering user: $error');
@@ -176,7 +158,7 @@ class UserRepositoryImpl implements BaseUserRepository {
   }
 
   @override
-  Future<void> singOut() async {
+  Future<void> signOut() async {
     try {
       final providerId = await CurrentProviderSetting().get() ?? '';
       if (providerId.contains('google')) {
@@ -208,7 +190,7 @@ class UserRepositoryImpl implements BaseUserRepository {
   }
 
   @override
-  Future<void> deleteUser(Set<String> users) async {
+  Future<void> deleteMultiUsers(Set<String> users) async {
     if (users.isEmpty) {
       logger.e('No user IDs provided for deletion');
       throw Exception('No user IDs provided for deletion');
@@ -240,6 +222,16 @@ class UserRepositoryImpl implements BaseUserRepository {
       logger.e('Failed to delete selected users: $error');
       throw error;
     });
+  }
+
+  @override
+  Future<void> deleteUser({required String userId}) async {
+    try {
+      await _dbUser.doc(userId).delete();
+    } catch (error) {
+      logger.e('Error deleting user: $error');
+      rethrow;
+    }
   }
 
   @override
@@ -332,29 +324,9 @@ class UserRepositoryImpl implements BaseUserRepository {
           await _auth.signInWithCredential(credential);
       auth.User? user = userCredential.user;
       if (user != null) {
-        // final userToSave = User(
-        //   id: generateNewId,
-        //   name: user.displayName!,
-        //   email: user.email!,
-        //   password: '',
-        //   profile: user.photoURL,
-        //   address: Address(name: '', location: ''),
-        //   createdAt: DateTime.now(),
-        //   updatedAt: DateTime.now(),
-        // );
         await CurrentProviderSetting().update(
           providerId: 'google.com',
         );
-        // try {
-        //   // Add user data to Firestore
-        //   await _dbUser.doc(userCredential.user!.uid).set(userToSave.toJson());
-        // } catch (firestoreError) {
-        //   // Rollback if Firestore transaction fails
-        //   await userCredential.user!
-        //       .delete(); // Delete user from Firebase Authentication
-        //   return Future.error(
-        //       'Failed to store user data in Firestore. Rolling back registration.');
-        // }
       }
 
       return user;
@@ -372,29 +344,9 @@ class UserRepositoryImpl implements BaseUserRepository {
           await _auth.signInWithProvider(githubProvider);
       auth.User? user = userCredential.user;
       if (user != null) {
-        // final userToSave = User(
-        //   id: generateNewId,
-        //   name: user.displayName!,
-        //   email: user.email!,
-        //   password: '',
-        //   profile: user.photoURL,
-        //   address: Address(name: '', location: ''),
-        //   createdAt: DateTime.now(),
-        //   updatedAt: DateTime.now(),
-        // );
         await CurrentProviderSetting().update(
           providerId: 'github.com',
         );
-        // try {
-        //   // Add user data to Firestore
-        //   await _dbUser.doc(userCredential.user!.uid).set(userToSave.toJson());
-        // } catch (firestoreError) {
-        //   // Rollback if Firestore transaction fails
-        //   await userCredential.user!
-        //       .delete(); // Delete user from Firebase Authentication
-        //   return Future.error(
-        //       'Failed to store user data in Firestore. Rolling back registration.');
-        // }
       }
 
       return user;
@@ -517,6 +469,32 @@ class UserRepositoryImpl implements BaseUserRepository {
     } catch (e) {
       logger.e('⚡ ERROR updating address: $e');
       rethrow;
+    }
+  }
+
+  @override
+  Future<void> changePassword(
+      {required String oldPassword, required String newPassword}) async {
+    final currentUser = _auth.currentUser;
+    if (currentUser != null) {
+      try {
+        String email = currentUser.email!;
+
+        // Re-authenticate the user
+        final credential = auth.EmailAuthProvider.credential(
+            email: email, password: oldPassword);
+        await currentUser.reauthenticateWithCredential(credential);
+        await currentUser.updatePassword(newPassword);
+        logger.d('Password updated successfully');
+      } catch (e) {
+        logger.e('Error updating password: $e');
+        rethrow;
+      }
+    } else {
+      throw auth.FirebaseAuthException(
+        code: 'user-not-logged-in',
+        message: 'No user is currently logged in.',
+      );
     }
   }
 }

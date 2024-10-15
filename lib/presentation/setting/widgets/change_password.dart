@@ -56,8 +56,8 @@ Future<void> showChangePasswordDialog(
     onSave: () async {
       if (formKey.currentState?.validate() ?? false) {
         try {
-          // await userNotifier.changePassword(
-          //     oldPassword: oldPassword, newPassword: newPassword);
+          await userNotifier.changePassword(
+              oldPassword: oldPassword, newPassword: newPassword);
           if (!context.mounted) return;
           Navigator.of(context).pop();
           showSnackBar(context, Messages.passChangeSuccessMsg);

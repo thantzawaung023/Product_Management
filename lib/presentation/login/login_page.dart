@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:product_management/config/navigator.dart';
 import 'package:product_management/presentation/login/widgets/square_tile.dart';
 import 'package:product_management/presentation/register/register_page.dart';
+import 'package:product_management/presentation/varification/verification_page.dart';
 import 'package:product_management/provider/authentication/auth_view_model.dart';
 import 'package:product_management/provider/loading/loading_provider.dart';
 import 'package:product_management/widgets/widgets.dart';
@@ -40,6 +41,18 @@ class LoginPage extends HookConsumerWidget {
             );
           }
           ref.watch(loadingProvider.notifier).update((state) => false);
+        } on FirebaseAuthException catch (error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(error.message.toString())),
+          );
+          if (error.code == 'email-not-verified') {
+            Navigator.of(context).pushAndRemoveUntil<void>(
+              MaterialPageRoute(
+                builder: (context) => const EmailVerificationPage(),
+              ),
+              (route) => false,
+            );
+          }
         } catch (e) {
           if (context.mounted) {
             ScaffoldMessenger.of(context).showSnackBar(

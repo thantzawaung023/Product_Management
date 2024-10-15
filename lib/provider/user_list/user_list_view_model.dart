@@ -90,7 +90,7 @@ class UserListViewModel extends StateNotifier<UserListState> {
   Future<void> deleteUsers(Set<String> users) async {
     state = state.copyWith(isLoading: true);
     try {
-      await _userRepository.deleteUser(users);
+      await _userRepository.deleteMultiUsers(users);
       state = state.copyWith(isLoading: false);
     } on auth.FirebaseException catch (error) {
       // Handle Firebase-specific exceptions
