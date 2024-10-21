@@ -2,74 +2,30 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:product_management/config/app.dart';
 import 'package:product_management/config/navigator.dart';
-import 'package:product_management/presentation/forget_password/forget_password_page.dart';
 import 'package:product_management/presentation/login/widgets/square_tile.dart';
 import 'package:product_management/presentation/register/register_page.dart';
 import 'package:product_management/presentation/varification/verification_page.dart';
 import 'package:product_management/provider/authentication/auth_view_model.dart';
 import 'package:product_management/provider/loading/loading_provider.dart';
+import 'package:product_management/utils/extensions/exception_msg.dart';
 import 'package:product_management/widgets/widgets.dart';
 
-class LoginPage extends HookConsumerWidget {
-  const LoginPage({super.key});
+class ForgetPasswordPage extends HookConsumerWidget {
+  const ForgetPasswordPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authViewModelNotifier = ref.watch(authNotifierProvider.notifier);
     final emailController =
         useTextEditingController(); // Using hook for controller
-    final passwordController =
-        useTextEditingController(); // Using hook for controller
     final formKey = useMemoized(() => GlobalKey<FormState>());
-
-    login() async {
-      if (formKey.currentState!.validate()) {
-        ref.read(loadingProvider.notifier).update((state) => true);
-        try {
-          await authViewModelNotifier.signIn(
-            emailController.text,
-            passwordController.text,
-          );
-          if (!context.mounted) return;
-
-          final authUser = FirebaseAuth.instance.currentUser;
-          if (authUser != null) {
-            Navigator.of(context).pushAndRemoveUntil<void>(
-              MaterialPageRoute(
-                builder: (context) => HomePage(userId: authUser.uid),
-              ),
-              (route) => false,
-            );
-          }
-        } on FirebaseAuthException catch (error) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(error.message.toString())),
-          );
-          if (error.code == 'email-not-verified') {
-            Navigator.of(context).pushAndRemoveUntil<void>(
-              MaterialPageRoute(
-                builder: (context) => const EmailVerificationPage(),
-              ),
-              (route) => false,
-            );
-          }
-        } catch (e) {
-          if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(e.toString())),
-            );
-          }
-        } finally {
-          ref
-              .read(loadingProvider.notifier)
-              .update((state) => false); // Move this to finally
-        }
-      }
-    }
+    final successMessage = useState<String?>(null);
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.grey[300],
+      ),
       backgroundColor: Colors.grey[300],
       body: SingleChildScrollView(
         child: Padding(
@@ -80,9 +36,22 @@ class LoginPage extends HookConsumerWidget {
               child: Column(
                 children: [
                   const SizedBox(height: 50),
-                  const Icon(Icons.lock, size: 150),
+                  const Icon(Icons.lock_reset, size: 150),
+                  const Text('Forget Password'),
                   const SizedBox(height: 20),
 
+                  if (successMessage.value != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Text(
+                        successMessage.value!,
+                        style: const TextStyle(
+                          color: Colors.green,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   // Email Text Box
                   CustomTextField(
                       controller: emailController,
@@ -94,46 +63,39 @@ class LoginPage extends HookConsumerWidget {
                         }
                         return null;
                       }),
-                  const SizedBox(height: 20),
-
-                  // Password Text Box
-                  CustomTextField(
-                      controller: passwordController,
-                      label: 'Password',
-                      obscured: true,
-                      isRequired: true,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Password is required.';
-                        }
-                        return null;
-                      }),
-                  const SizedBox(height: 15),
-
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push<void>(
-                          MaterialPageRoute(
-                            builder: (context) => const ForgetPasswordPage(),
-                          ),
-                        );
-                        formKey.currentState?.reset();
-                      },
-                      child: const Text(
-                        'Forgot your password? ',
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black87),
-                      ),
-                    ),
-                  ),
                   const SizedBox(height: 30),
 
                   // Login Btn
-                  CustomButton(label: 'Login', onPressed: login),
+                  CustomButton(
+                      label: 'Send',
+                      onPressed: () async {
+                        if (formKey.currentState!.validate()) {
+                          ref
+                              .watch(loadingProvider.notifier)
+                              .update((state) => true);
+                          FocusScope.of(context).unfocus();
+                          try {
+                            await authViewModelNotifier.forgotPassword(
+                              emailController.text,
+                            );
+                            if (!context.mounted) return;
+                            ref
+                                .watch(loadingProvider.notifier)
+                                .update((state) => false);
+
+                            formKey.currentState?.reset();
+                            successMessage.value =
+                                'Password reset link has been sent to your email  ${emailController.text}';
+                            emailController.text = '';
+                          } on Exception catch (e) {
+                            if (!context.mounted) return;
+                            ref
+                                .watch(loadingProvider.notifier)
+                                .update((state) => false);
+                            showSnackBar(context, e.getMessage);
+                          }
+                        }
+                      }),
                   const SizedBox(height: 40),
 
                   Row(

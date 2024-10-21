@@ -69,26 +69,33 @@ class SettingPage extends HookConsumerWidget {
             showSnackBar(context, e.getMessage);
           }
         },
-        okButton: 'Withdraw',
+        okButton: 'Dlete Now',
         cancelButton: 'Cancel',
       );
     }
 
     // Function for logging out the user
     Future<void> logOut() async {
-      try {
-        final authNotifier = ref.watch(authNotifierProvider.notifier);
-        await authNotifier.signOut();
-        if (context.mounted) {
-          // Ensure you await the sign out
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const LoginPage()),
-          );
-        }
-      } catch (e) {
-        if (context.mounted) {
-          showSnackBar(context, 'Logout failed: ${e.toString()}');
+      // Show confirmation dialog
+      final shouldDelete = await showConfirmDialog(
+        context: context,
+        message: 'Are you sure you want to Logout?',
+      );
+      if (shouldDelete == true) {
+        try {
+          final authNotifier = ref.watch(authNotifierProvider.notifier);
+          await authNotifier.signOut();
+          if (context.mounted) {
+            // Ensure you await the sign out
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const LoginPage()),
+            );
+          }
+        } catch (e) {
+          if (context.mounted) {
+            showSnackBar(context, 'Logout failed: ${e.toString()}');
+          }
         }
       }
     }

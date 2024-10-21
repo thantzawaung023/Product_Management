@@ -11,19 +11,41 @@ Future<bool> showConfirmDialog({
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            backgroundColor: Colors.white,
             title: Text(message),
             actions: <Widget>[
               TextButton(
-                child: const Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop(true); // Return true on OK
-                },
-              ),
-              TextButton(
-                child: const Text('CANCEL'),
+                child: const Text(
+                  'CANCEL',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF00BBEF),
+                  ),
+                ),
                 onPressed: () {
                   Navigator.of(context).pop(false); // Return false on CANCEL
                 },
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                onPressed: () async {
+                  Navigator.of(context).pop(true); // Return true on OK
+                },
+                child: const Text(
+                  'Confirm',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ],
           );
