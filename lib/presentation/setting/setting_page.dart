@@ -103,7 +103,7 @@ class SettingPage extends HookConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
-        title: const Text('User Profile'),
+        title: const Text('Setting'),
         backgroundColor: Colors.grey.shade400,
         actions: const [],
       ),

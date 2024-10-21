@@ -9,7 +9,18 @@ import 'package:product_management/utils/storage/provider_setting.dart';
 
 //Stream Provider For Auth User
 final authUserStreamProvider = StreamProvider.autoDispose<auth.User?>((ref) {
-  return ref.watch(userRepositoryProvider).authUserStream();
+  return ref
+      .watch(userRepositoryProvider)
+      .authUserStream()
+      .asyncMap((user) async {
+    // If the user is not null and the email is not verified, reload the user
+    if (user != null && !user.emailVerified) {
+      await user.reload(); // Reload user to get updated verification status
+      return auth
+          .FirebaseAuth.instance.currentUser; // Return the updated user object
+    }
+    return user; // Return the user as it is if verified or null
+  });
 });
 
 // State Notifier Provider
@@ -34,13 +45,14 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
   Future<void> signIn(String email, String password) async {
     state = state.copyWith(isLoading: true);
     try {
+      await _userRepository.signOut();
       final user = await _userRepository.signIn(email, password);
       // Save provider type in local settings
       await CurrentProviderSetting().update(providerId: 'password');
       // Ensure email is verified
       if (!user!.emailVerified) {
-        // await _userRepository.singOut();
-        user.sendEmailVerification();
+        // await _userRepository.signOut();
+        // user.sendEmailVerification();
         throw auth.FirebaseAuthException(
           code: 'email-not-verified',
           message: 'Please verify your email before signing in.',
@@ -191,7 +203,8 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
       return false;
     }
   }
-   Future<bool> checkEmailVerification() async {
+
+  Future<bool> checkEmailVerification() async {
     bool checked = false;
     await auth.FirebaseAuth.instance.currentUser?.reload().then((_) {
       checked = auth.FirebaseAuth.instance.currentUser!.emailVerified;

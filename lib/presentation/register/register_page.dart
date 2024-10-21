@@ -126,11 +126,12 @@ class RegisterPageState extends ConsumerState<RegisterPage> {
                               .watch(loadingProvider.notifier)
                               .update((state) => false);
                           showSnackBar(context, Messages.userSaveSuccess);
-                          Navigator.pushReplacement(
-                            context,
+                          Navigator.of(context).pushAndRemoveUntil<void>(
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    const EmailVerificationPage()),
+                              builder: (context) =>
+                                  const EmailVerificationPage(),
+                            ),
+                            (route) => false,
                           );
                         }
                       } catch (e) {

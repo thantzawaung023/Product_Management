@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:product_management/config/app.dart';
 import 'package:product_management/data/entities/user/user.dart';
 import 'package:product_management/provider/loading/loading_provider.dart';
 import 'package:product_management/provider/user/user_view_model.dart';
@@ -13,6 +14,7 @@ class UserCreatePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isLoading = ref.watch(loadingProvider);
     final userViewModelNotifier =
         ref.watch(userViewModelNotifierProvider(user).notifier);
 
@@ -98,6 +100,7 @@ class UserCreatePage extends ConsumerWidget {
                   label: 'Password',
                   onChanged: userViewModelNotifier.setPassword,
                   isRequired: true,
+                  obscured: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Password is required.';
@@ -110,26 +113,52 @@ class UserCreatePage extends ConsumerWidget {
                 ),
                 const SizedBox(height: 20),
                 CustomButton(
-                  label: 'Save',
+                  label: isLoading ? '' : 'Save',
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      ref
-                          .watch(loadingProvider.notifier)
-                          .update((state) => true);
+                      ref.read(loadingProvider.notifier).state = true;
                       try {
                         await userViewModelNotifier.register();
-                        // Navigate to HomeScreen on successful registration
 
                         if (context.mounted) {
-                          Navigator.pop(context);
+                          showCustomDialogForm(
+                            context: context,
+                            title: 'Success',
+                            content: const Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.verified_outlined,
+                                    color: Colors.amber, size: 100),
+                                SizedBox(height: 16),
+                                Text(
+                                  'User Creation is successful!',
+                                  style: TextStyle(
+                                    color: Colors.greenAccent,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                SizedBox(height: 8),
+                                Text('Please Login And Verify Email!'),
+                              ],
+                            ),
+                            onSave: () =>
+                                Navigator.of(context).pushAndRemoveUntil<void>(
+                              MaterialPageRoute(
+                                  builder: (context) => const MyApp()),
+                              (route) => false,
+                            ),
+                          );
                         }
                       } catch (e) {
-                        // Show error message
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(e.toString())),
                           );
                         }
+                      } finally {
+                        ref.read(loadingProvider.notifier).state = false;
                       }
                     }
                   },

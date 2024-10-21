@@ -122,7 +122,7 @@ class UserRepositoryImpl implements BaseUserRepository {
       await userCredential.user!.updateDisplayName(user.name);
 
       // Send email verification
-      await userCredential.user?.sendEmailVerification();
+      // await userCredential.user?.sendEmailVerification();
 
       // Save provider type in local settings
       await CurrentProviderSetting().update(providerId: 'password');

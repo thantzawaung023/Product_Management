@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:product_management/presentation/profile/user_profile.dart';
 import 'package:product_management/utils/extensions/exception_msg.dart';
 import 'package:product_management/widgets/custom_text_field.dart';
 
@@ -171,6 +170,86 @@ Future<void> showCustomDialogForm({
           },
         );
       });
+}
+
+Future<void> showEmailVerifiedDialog({
+  required BuildContext context,
+  required String title,
+  required Widget content,
+  required Future<void> Function() onSave,
+}) {
+  return showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      bool isLoading = false;
+
+      return StatefulBuilder(
+        builder: (BuildContext context, setState) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            backgroundColor: Colors.white,
+            title: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            content: content,
+            actions: <Widget>[
+              Center(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF017256),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: isLoading
+                      ? null
+                      : () async {
+                          setState(() => isLoading = true);
+                          try {
+                            await onSave();
+                          } on Exception catch (e) {
+                            if (context.mounted) {
+                              showSnackBar(
+                                  context, e.toString()); // Handle error
+                            }
+                          } finally {
+                            if (context.mounted) {
+                              setState(() => isLoading = false);
+                            }
+                          }
+                        },
+                  child: isLoading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text(
+                          'Go to Login Page',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    },
+  );
 }
 
 Future<void> accountDeleteConfirmationDialog({

@@ -33,8 +33,9 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
-      body: Center(
+      backgroundColor: const Color.fromRGBO(224, 224, 224, 1),
+      body:
+       Center(
         child: _pages.elementAt(_selectedIndex), // Display selected page
       ),
       bottomNavigationBar: NavigationBar(
@@ -53,7 +54,7 @@ class HomePageState extends State<HomePage> {
           ),
           NavigationDestination(
             icon: Icon(Icons.settings),
-            label: 'Logout',
+            label: 'Setting',
           ),
         ],
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,

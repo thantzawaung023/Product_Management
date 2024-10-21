@@ -32,13 +32,44 @@ class EmailVerificationPageState extends ConsumerState<EmailVerificationPage> {
     _verificationCheckTimer =
         Timer.periodic(const Duration(seconds: 5), (timer) async {
       final authViewModel = ref.read(authNotifierProvider.notifier);
-      bool isVerified = await authViewModel.checkEmailVerification();
+      bool isVerified = await authViewModel.checkEmailVerified();
       if (isVerified) {
         timer.cancel();
+        await authViewModel.signOut();
         if (mounted) {
-          Navigator.of(context).pushAndRemoveUntil<void>(
-            MaterialPageRoute(builder: (context) => const MyApp()),
-            (route) => false,
+          showEmailVerifiedDialog(
+            context: context,
+            title: 'You Have Been Verified',
+            content: const Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.verified_user,
+                  color: Colors.green,
+                  size: 100,
+                ),
+                SizedBox(height: 16),
+                Center(
+                  child: Text(
+                    'Your Email verification is successful!',
+                    style: TextStyle(
+                      color: Colors.greenAccent,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Center(
+                  child: Text('Now you can login with your account.'),
+                ),
+              ],
+            ),
+            onSave: () => Navigator.of(context).pushAndRemoveUntil<void>(
+              MaterialPageRoute(builder: (context) => const MyApp()),
+              (route) => false,
+            ),
           );
         }
       }
