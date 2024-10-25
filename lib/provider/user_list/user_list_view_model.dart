@@ -102,8 +102,9 @@ class UserListViewModel extends StateNotifier<UserListState> {
       // Handle generic exceptions
       state = state.copyWith(
         isLoading: false,
-        errorMsg: e.toString(), // Make sure to display the error correctly
+        errorMsg: e.toString(), 
       );
     }
   }
+
 }

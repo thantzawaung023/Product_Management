@@ -121,7 +121,8 @@ class EmailVerificationPageState extends ConsumerState<EmailVerificationPage> {
                   ? null // Disable button while loading
                   : () async {
                       await authViewModel.sendVerificationEmail();
-                      showSnackBar(context, 'Verification email sent.');
+                      showSnackBar(
+                          context, 'Verification email sent.', Colors.green);
                     },
               child: const Text('Resend Verification Email'),
             ),
@@ -129,13 +130,14 @@ class EmailVerificationPageState extends ConsumerState<EmailVerificationPage> {
               onPressed: () async {
                 bool isVerified = await authViewModel.checkEmailVerified();
                 if (isVerified && context.mounted) {
-                  showSnackBar(context, Messages.verificationSuccess);
+                  showSnackBar(
+                      context, Messages.verificationSuccess, Colors.green);
                   Navigator.of(context).pushAndRemoveUntil<void>(
                     MaterialPageRoute(builder: (context) => const MyApp()),
                     (route) => false,
                   );
                 } else if (authState.errorMsg.isNotEmpty && context.mounted) {
-                  showSnackBar(context, authState.errorMsg);
+                  showSnackBar(context, authState.errorMsg, Colors.red);
                   authViewModel
                       .clearErrorMessage(); // Clear error after showing it
                 }

@@ -46,7 +46,7 @@ class UserProfilePage extends HookConsumerWidget {
       final image = await userNotifier.imageData();
 
       if (image == null && context.mounted) {
-        showSnackBar(context, Messages.validateImgMsg);
+        showSnackBar(context, Messages.validateImgMsg,Colors.red);
         ref.read(loadingProvider.notifier).update((state) => false);
         return;
       }
@@ -55,11 +55,11 @@ class UserProfilePage extends HookConsumerWidget {
         userNotifier.setImageData(image!);
         await userNotifier.uploadProfile(oldProfileUrl: user.profile ?? '');
         if (context.mounted) {
-          showSnackBar(context, 'Profile image uploaded successfully!');
+          showSnackBar(context, 'Profile image uploaded successfully!',Colors.green);
         }
       } on Exception catch (e) {
         if (context.mounted) {
-          showSnackBar(context, e.getMessage);
+          showSnackBar(context, e.getMessage,Colors.red);
         }
       } finally {
         ref.read(loadingProvider.notifier).update((state) => false);
@@ -76,12 +76,12 @@ class UserProfilePage extends HookConsumerWidget {
         ref.watch(loadingProvider.notifier).update((state) => false);
         showOptions.value = false;
         if (context.mounted) {
-          showSnackBar(context, 'Profile image removed successfully!');
+          showSnackBar(context, 'Profile image removed successfully!',Colors.green);
         }
       } on Exception catch (e) {
         ref.watch(loadingProvider.notifier).update((state) => false);
         if (context.mounted) {
-          showSnackBar(context, e.getMessage);
+          showSnackBar(context, e.getMessage,Colors.red);
         }
       }
     }

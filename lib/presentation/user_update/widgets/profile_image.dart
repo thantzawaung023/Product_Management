@@ -27,7 +27,7 @@ class ProfileImageSection extends StatelessWidget {
             final image = await viewModel.imageData();
             if (image == null) {
               if (context.mounted) {
-                showSnackBar(context, Messages.validateImgMsg);
+                showSnackBar(context, Messages.validateImgMsg, Colors.red);
               }
             } else {
               viewModel.setImageData(image);
@@ -55,7 +55,7 @@ class ProfileImageSection extends StatelessWidget {
           height: 10,
         ),
         Text(
-          Messages.selectImg,
+          Messages.selectProfileImg,
           style: const TextStyle(color: Colors.grey),
         ),
       ],

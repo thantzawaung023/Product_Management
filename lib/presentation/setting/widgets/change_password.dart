@@ -60,9 +60,9 @@ Future<void> showChangePasswordDialog(
               oldPassword: oldPassword, newPassword: newPassword);
           if (!context.mounted) return;
           Navigator.of(context).pop();
-          showSnackBar(context, Messages.passChangeSuccessMsg);
+          showSnackBar(context, Messages.passChangeSuccessMsg,Colors.green);
         } on Exception catch (e) {
-          showSnackBar(context, e.getMessage);
+          showSnackBar(context, e.getMessage,Colors.red);
         }
       }
     },

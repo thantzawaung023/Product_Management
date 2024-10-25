@@ -30,9 +30,13 @@ class _UserPageState extends ConsumerState<UserPage> {
           _isSelectionMode = false;
           _selectedItems.clear();
         });
-        showSnackBar(context, 'User deleted successfully');
+        if (context.mounted) {
+          showSnackBar(context, 'User deleted successfully', Colors.green);
+        }
       } catch (e) {
-        showSnackBar(context, 'Failed to delete user: $e');
+        if (context.mounted) {
+          showSnackBar(context, 'Failed to delete user: $e', Colors.red);
+        }
       }
     }
 
@@ -45,7 +49,7 @@ class _UserPageState extends ConsumerState<UserPage> {
           'User List',
           style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
         ),
-         bottom: PreferredSize(
+        bottom: PreferredSize(
           preferredSize: const Size.fromHeight(56.0),
           child: UserSearchInput(onChanged: (query) {
             userListViewModelNotifier.searchUsers(query);
@@ -67,35 +71,35 @@ class _UserPageState extends ConsumerState<UserPage> {
               ),
             )
           else
-          Expanded(
-            child: ListView.builder(
-              itemCount: userListViewModel.userList.length,
-              itemBuilder: (context, index) {
-                final user = userListViewModel.userList[index];
-                return UserListTile(
-                  user: user,
-                  selectedItems: _selectedItems,
-                  isSelectionMode: _isSelectionMode,
-                  onItemSelect: (String userId, bool isSelected) {
-                    setState(() {
-                      if (isSelected) {
-                        _selectedItems.add(userId);
-                      } else {
-                        _selectedItems.remove(userId);
-                      }
-                      if (_selectedItems.isEmpty) {
-                        _isSelectionMode =
-                            false; // Exit selection mode when no items are selected
-                      } else {
-                        _isSelectionMode =
-                            true; // Enter selection mode when at least one item is selected
-                      }
-                    });
-                  },
-                );
-              },
+            Expanded(
+              child: ListView.builder(
+                itemCount: userListViewModel.userList.length,
+                itemBuilder: (context, index) {
+                  final user = userListViewModel.userList[index];
+                  return UserListTile(
+                    user: user,
+                    selectedItems: _selectedItems,
+                    isSelectionMode: _isSelectionMode,
+                    onItemSelect: (String userId, bool isSelected) {
+                      setState(() {
+                        if (isSelected) {
+                          _selectedItems.add(userId);
+                        } else {
+                          _selectedItems.remove(userId);
+                        }
+                        if (_selectedItems.isEmpty) {
+                          _isSelectionMode =
+                              false; // Exit selection mode when no items are selected
+                        } else {
+                          _isSelectionMode =
+                              true; // Enter selection mode when at least one item is selected
+                        }
+                      });
+                    },
+                  );
+                },
+              ),
             ),
-          ),
         ],
       ),
       floatingActionButton: _isSelectionMode
@@ -108,7 +112,7 @@ class _UserPageState extends ConsumerState<UserPage> {
                         message: 'Are you sure you want to delete this user?',
                       );
                       if (shouldDelete == true) {
-                        deleteUser(); // Await deleteUser for async handling
+                        deleteUser(); // deleteUser for async handling
                       }
                     }
                   : null,

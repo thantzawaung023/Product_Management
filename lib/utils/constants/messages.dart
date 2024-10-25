@@ -8,7 +8,8 @@ class Messages {
   static String saveUserBtnTxt = 'Save User';
   static String noUser = 'No users found.';
   static String searchUser = 'Search...';
-  static String selectImg = 'Tap to select profile image';
+  static String selectProfileImg = 'Tap to select profile image';
+  static String selectImg = 'Tap to select image';
   static String validateImgMsg = 'Please select a valid image';
   static String verificationSuccess = 'Your email verification is success.';
   static String logoutAlertMsg = 'Are you sure to logout?';

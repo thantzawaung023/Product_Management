@@ -125,7 +125,7 @@ class RegisterPageState extends ConsumerState<RegisterPage> {
                           ref
                               .watch(loadingProvider.notifier)
                               .update((state) => false);
-                          showSnackBar(context, Messages.userSaveSuccess);
+                          showSnackBar(context, Messages.userSaveSuccess,Colors.green);
                           Navigator.of(context).pushAndRemoveUntil<void>(
                             MaterialPageRoute(
                               builder: (context) =>

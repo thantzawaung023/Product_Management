@@ -51,7 +51,7 @@ class BuildDetailCard extends ConsumerWidget {
                     }
                   } on Exception catch (e) {
                     if (!context.mounted) return;
-                    showSnackBar(context, e.getMessage);
+                    showSnackBar(context, e.getMessage,Colors.red);
                   }
                 },
               ),
@@ -81,7 +81,7 @@ class BuildDetailCard extends ConsumerWidget {
                       }
                     } on Exception catch (e) {
                       if (!context.mounted) return;
-                      showSnackBar(context, e.getMessage);
+                      showSnackBar(context, e.getMessage,Colors.red);
                     }
                   },
                 );

@@ -66,7 +66,7 @@ class SettingPage extends HookConsumerWidget {
           } on Exception catch (e) {
             logger.e("Delete Error: $e");
             if (!context.mounted) return;
-            showSnackBar(context, e.getMessage);
+            showSnackBar(context, e.getMessage,Colors.red);
           }
         },
         okButton: 'Dlete Now',
@@ -94,7 +94,7 @@ class SettingPage extends HookConsumerWidget {
           }
         } catch (e) {
           if (context.mounted) {
-            showSnackBar(context, 'Logout failed: ${e.toString()}');
+            showSnackBar(context, 'Logout failed: ${e.toString()}',Colors.red);
           }
         }
       }

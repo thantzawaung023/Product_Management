@@ -31,7 +31,7 @@ class UserUpdatePage extends ConsumerWidget {
           child: Form(
             key: _formKey,
             child: Column(
-              children: [   
+              children: [
                 const SizedBox(
                   height: 50,
                 ),
@@ -101,7 +101,7 @@ class UserUpdatePage extends ConsumerWidget {
                 const SizedBox(
                   height: 15,
                 ),
-                
+
                 const SizedBox(height: 20),
                 CustomButton(
                   label: 'Save',
@@ -113,7 +113,8 @@ class UserUpdatePage extends ConsumerWidget {
                       try {
                         await userViewModelNotifier.updateUser();
                         if (context.mounted) {
-                          showSnackBar(context, Messages.userSaveSuccess);
+                          showSnackBar(
+                              context, Messages.userSaveSuccess, Colors.green);
                           Navigator.of(context).pop();
                         }
                       } catch (e) {

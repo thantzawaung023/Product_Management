@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:product_management/presentation/profile/user_profile.dart';
 import 'package:product_management/presentation/setting/setting_page.dart';
+import 'package:product_management/presentation/todo_list/todo_list_page.dart';
 import 'package:product_management/presentation/user/user_page.dart';
 
 
@@ -23,7 +24,7 @@ class HomePageState extends State<HomePage> {
     super.initState();
     _pages = <Widget>[
       const UserPage(), // UserPage has a const constructor
-      const Text('Notification'),
+      const TodoListPage(),
       UserProfilePage(
           userId: widget.userId), // No const here, userId is dynamic
       SettingPage(userId: widget.userId),
@@ -45,8 +46,8 @@ class HomePageState extends State<HomePage> {
             label: 'Home',
           ),
           NavigationDestination(
-            icon: Badge(child: Icon(Icons.notifications)),
-            label: 'Notifications',
+            icon: Badge(child: Icon(Icons.task)),
+            label: 'TodoList',
           ),
           NavigationDestination(
             icon: Icon(Icons.person),

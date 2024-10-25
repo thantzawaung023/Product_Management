@@ -78,7 +78,7 @@ class UserDetailPage extends HookConsumerWidget {
         children: [
           CircleAvatar(
             radius: 50,
-            backgroundColor: Colors.grey[300],
+            backgroundColor: Colors.grey[400],
             child: userData.profile != null && userData.profile!.isNotEmpty
                 ? ClipOval(
                     child: CachedNetworkImage(

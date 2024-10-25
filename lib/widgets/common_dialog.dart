@@ -54,12 +54,12 @@ Future<bool> showConfirmDialog({
       false; // Ensure it returns false if dialog is dismissed
 }
 
-void showSnackBar(BuildContext context, String msg) {
+void showSnackBar(BuildContext context, String msg, MaterialColor? color) {
   final Widget toastWithButton = Container(
     padding: const EdgeInsets.only(left: 19),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(20),
-      color: const Color(0xFF1E1A1A),
+      color: color ?? const Color(0xFF1E1A1A),
     ),
     child: Row(
       children: [
@@ -162,7 +162,7 @@ Future<void> showCustomDialogForm({
                             await onSave();
                           } on Exception catch (e) {
                             if (context.mounted) {
-                              showSnackBar(context, e.getMessage);
+                              showSnackBar(context, e.getMessage, Colors.red);
                             }
                           } finally {
                             if (context.mounted) {
@@ -239,8 +239,8 @@ Future<void> showEmailVerifiedDialog({
                             await onSave();
                           } on Exception catch (e) {
                             if (context.mounted) {
-                              showSnackBar(
-                                  context, e.toString()); // Handle error
+                              showSnackBar(context, e.toString(),
+                                  Colors.red); // Handle error
                             }
                           } finally {
                             if (context.mounted) {

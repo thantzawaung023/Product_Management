@@ -126,7 +126,6 @@ class UserRepositoryImpl implements BaseUserRepository {
 
       // Save provider type in local settings
       await CurrentProviderSetting().update(providerId: 'password');
-
     } on auth.FirebaseAuthException catch (error) {
       // Step 6: Handle FirebaseAuth-specific errors
       logger.e('Error registering user: $error');
@@ -203,9 +202,15 @@ class UserRepositoryImpl implements BaseUserRepository {
       for (String userId in users) {
         DocumentReference userRef = _dbUser.doc(userId);
         final userDocSnapshot = await transaction.get(userRef); // Read first
-        if (userDocSnapshot.exists) {
+        User? user = await getUserFuture(userId: userId);
+        if (userDocSnapshot.exists && user != null) {
           existingUserRefs
               .add(userRef); // Collect the references of existing users
+          for (UserProviderData providerData in user.providerData!) {
+            if (providerData.photoUrl.isNotEmpty) {
+              deleteFromStorage(providerData.photoUrl);
+            }
+          }
         } else {
           logger.e('User document with ID $userId does not exist.');
           throw Exception('User document with ID $userId does not exist.');
@@ -236,13 +241,7 @@ class UserRepositoryImpl implements BaseUserRepository {
 
   @override
   Stream<User> getUser({required String userId}) {
-    return _dbUser.doc(userId).snapshots().handleError((dynamic error) {
-      if (error is FirebaseException) {
-        throw Exception('Error retrieving user data from Firebase.');
-      } else {
-        throw Exception('An unknown error occurred.');
-      }
-    }).map((snapshot) {
+    return _dbUser.doc(userId).snapshots().map((snapshot) {
       if (snapshot.exists && snapshot.data() != null) {
         return User.fromJson(snapshot.data()!);
       } else {
