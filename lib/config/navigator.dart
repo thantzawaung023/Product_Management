@@ -1,70 +1,131 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:product_management/presentation/home/home_page.dart';
 import 'package:product_management/presentation/profile/user_profile.dart';
 import 'package:product_management/presentation/setting/setting_page.dart';
 import 'package:product_management/presentation/todo_list/todo_list_page.dart';
 import 'package:product_management/presentation/user/user_page.dart';
+import 'package:product_management/provider/user/user_view_model.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.userId});
+class AppNavigator extends ConsumerStatefulWidget {
+  const AppNavigator({super.key, required this.userId, this.index = 0});
+
   final String userId;
+  final int index; // No need for a default value assignment here
 
   @override
-  HomePageState createState() => HomePageState();
+  AppNavigatorState createState() => AppNavigatorState();
 }
 
-class HomePageState extends State<HomePage> {
+class AppNavigatorState extends ConsumerState<AppNavigator> {
   int _selectedIndex = 0;
+  late final PageController _pageController;
 
   // List of pages to show based on the selected index
-  late final List<Widget> _pages;
+  List<Widget>? _pages;
 
   @override
   void initState() {
     super.initState();
-    _pages = <Widget>[
-      const UserPage(), // UserPage has a const constructor
-      const TodoListPage(),
-      UserProfilePage(
-          userId: widget.userId), // No const here, userId is dynamic
-      SettingPage(userId: widget.userId),
-    ];
+    _selectedIndex = widget.index;
+    _pageController = PageController(initialPage: _selectedIndex);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: _pages.elementAt(_selectedIndex), // Display selected page
-      ),
-      bottomNavigationBar: NavigationBar(
-        destinations: const <NavigationDestination>[
-          NavigationDestination(
-            icon: Icon(Icons.home),
-            label: 'Home',
+    // Fetch the user asynchronously
+    final userAsyncValue = ref.watch(userProviderFuture(widget.userId));
+
+    return userAsyncValue.when(
+      data: (user) {
+        // Initialize the pages when data is available
+        _pages ??= <Widget>[
+          HomePage(user: user!),
+          const UserPage(),
+          const TodoListPage(),
+          UserProfilePage(userId: widget.userId),
+          SettingPage(userId: widget.userId),
+        ];
+
+        return Scaffold(
+          body: PageView(
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() {
+                _selectedIndex = index; // Update selected index when swiping
+              });
+            },
+            children: _pages!,
           ),
-          NavigationDestination(
-            icon: Badge(child: Icon(Icons.task)),
-            label: 'TodoList',
+          floatingActionButton: FloatingActionButton(
+            backgroundColor:
+                _selectedIndex == 0 ? Colors.amber : Colors.deepOrange,
+            shape: const CircleBorder(),
+            onPressed: () => _onItemTapped(0),
+            child: Icon(
+              Icons.home,
+              size: 30,
+              color: _selectedIndex == 0 ? Colors.deepPurple : Colors.grey,
+            ),
           ),
-          NavigationDestination(
-            icon: Icon(Icons.person),
-            label: 'Profile',
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          bottomNavigationBar: BottomAppBar(
+            shape: const CircularNotchedRectangle(),
+            notchMargin: 10,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    _buildBottomNavItem(Icons.group, 'User', 1),
+                    _buildBottomNavItem(Icons.card_giftcard, 'Todo Post', 2),
+                  ],
+                ),
+                Row(
+                  children: [
+                    _buildBottomNavItem(Icons.person, 'Profile', 3),
+                    _buildBottomNavItem(Icons.settings, 'Setting', 4),
+                  ],
+                ),
+              ],
+            ),
           ),
-          NavigationDestination(
-            icon: Icon(Icons.settings),
-            label: 'Setting',
+        );
+      },
+      loading: () =>
+          const Center(child: CircularProgressIndicator()), // Loading indicator
+      error: (error, stack) =>
+          Center(child: Text('Error: $error')), // Error handling
+    );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    _pageController.jumpToPage(index); // Navigate to the selected page
+  }
+
+  Widget _buildBottomNavItem(IconData icon, String label, int index) {
+    final bool isSelected = _selectedIndex == index;
+    return MaterialButton(
+      minWidth: 40,
+      onPressed: () => _onItemTapped(index),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            icon,
+            color: isSelected ? Colors.deepPurple : Colors.grey[600],
+          ),
+          Text(
+            label,
+            style: TextStyle(
+              color: isSelected ? Colors.deepPurple : Colors.grey[600],
+            ),
           ),
         ],
-        labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-        selectedIndex: _selectedIndex,
-        backgroundColor: Theme.of(context).bottomAppBarTheme.color,
-        shadowColor: Colors.grey[700],
-        indicatorColor: Theme.of(context).bottomAppBarTheme.shadowColor,
-        onDestinationSelected: (int index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
       ),
     );
   }

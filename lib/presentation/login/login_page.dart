@@ -39,7 +39,7 @@ class LoginPage extends HookConsumerWidget {
           if (authUser != null) {
             Navigator.of(context).pushAndRemoveUntil<void>(
               MaterialPageRoute(
-                builder: (context) => HomePage(userId: authUser.uid),
+                builder: (context) => AppNavigator(userId: authUser.uid),
               ),
               (route) => false,
             );
@@ -169,7 +169,7 @@ class LoginPage extends HookConsumerWidget {
                               Navigator.of(context).pushAndRemoveUntil<void>(
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      HomePage(userId: authUser.uid),
+                                      AppNavigator(userId: authUser.uid),
                                 ),
                                 (route) => false,
                               );
@@ -196,7 +196,7 @@ class LoginPage extends HookConsumerWidget {
                                 MaterialPageRoute(
                                   builder: (context) => !authUser.emailVerified
                                       ? const EmailVerificationPage()
-                                      : HomePage(userId: authUser.uid),
+                                      : AppNavigator(userId: authUser.uid),
                                 ),
                                 (route) => false,
                               );

@@ -18,6 +18,10 @@ final getUserProvider = StreamProvider.autoDispose.family<User, String>(
   (ref, id) => ref.watch(userRepositoryProvider).getUser(userId: id),
 );
 
+final userProviderFuture = FutureProvider.autoDispose.family<User?, String>(
+  (ref, id) => ref.watch(userRepositoryProvider).getUserFuture(userId: id),
+);
+
 // State Notifier Provider
 final userViewModelNotifierProvider = StateNotifierProvider.autoDispose
     .family<UserViewModel, UserState, User?>((ref, user) {
@@ -251,5 +255,11 @@ class UserViewModel extends StateNotifier<UserState> {
       logger.e('Error changing password: $error');
       rethrow;
     }
+  }
+
+  Future<User?> getUserFuture({required String authUserId}) async {
+    final user = await _userRepository.getUserFuture(userId: authUserId);
+
+    return user;
   }
 }

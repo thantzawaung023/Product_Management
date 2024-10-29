@@ -44,7 +44,7 @@ class MyApp extends HookConsumerWidget {
               authStateNotifier.getUserFuture(authUserId: user.uid);
               return null;
             }, [user]);
-            return HomePage(
+            return AppNavigator(
               userId: user.uid,
             );
           } else {
