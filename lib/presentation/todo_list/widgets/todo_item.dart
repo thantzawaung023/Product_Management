@@ -23,7 +23,7 @@ class TodoItem extends ConsumerStatefulWidget {
 class TodoItemState extends ConsumerState<TodoItem> {
   @override
   Widget build(BuildContext context) {
-    final todoState = ref.watch(todoNotifierProvider(widget.todo));
+
     final todoNotifier = ref.watch(todoNotifierProvider(widget.todo).notifier);
     final user = auth.FirebaseAuth.instance.currentUser;
     return Column(

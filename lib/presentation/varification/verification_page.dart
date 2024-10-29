@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:product_management/config/app.dart';
-import 'package:product_management/presentation/login/login_page.dart';
 import 'package:product_management/provider/authentication/auth_view_model.dart';
 import 'package:product_management/utils/constants/messages.dart';
 import 'package:product_management/widgets/common_dialog.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class EmailVerificationPage extends ConsumerStatefulWidget {
   const EmailVerificationPage({super.key});
@@ -87,32 +87,33 @@ class EmailVerificationPageState extends ConsumerState<EmailVerificationPage> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authNotifierProvider);
     final authViewModel = ref.read(authNotifierProvider.notifier);
+    final localization = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Verify Your Email')),
+      appBar: AppBar(title: Text(localization.verifyTitle)),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              'Please verify Your Email Address',
+            Text(
+              localization.verify,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
             if (authState.isLoading) const CircularProgressIndicator(),
             if (!authState.isLoading && authState.isEmailSent)
-              const Column(
+              Column(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.mark_email_unread,
                     size: 50,
                     color: Colors.red,
                   ),
                   Text(
-                    'A verification email has been sent to your email address.',
+                    localization.verifySend,
                     textAlign: TextAlign.center,
                   ),
-                  Text('Please check your inbox.'),
+                  Text(localization.verifyCheckLable),
                 ],
               ),
             const SizedBox(height: 40),
@@ -121,10 +122,10 @@ class EmailVerificationPageState extends ConsumerState<EmailVerificationPage> {
                   ? null // Disable button while loading
                   : () async {
                       await authViewModel.sendVerificationEmail();
-                      showSnackBar(
-                          context, 'Verification email sent.', Colors.green);
+                      showSnackBar(context, localization.verifyHasBeenReSend,
+                          Colors.green);
                     },
-              child: const Text('Resend Verification Email'),
+              child: Text(localization.verifyReSend),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -142,7 +143,7 @@ class EmailVerificationPageState extends ConsumerState<EmailVerificationPage> {
                       .clearErrorMessage(); // Clear error after showing it
                 }
               },
-              child: const Text('Check Verification Status'),
+              child: Text(localization.verifyCheck),
             ),
           ],
         ),

@@ -7,6 +7,7 @@ import 'package:product_management/provider/todo/todo_notifier.dart';
 import 'package:product_management/widgets/common_dialog.dart';
 import 'package:product_management/widgets/custom_btn.dart';
 import 'package:product_management/widgets/custom_text_field.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class TodoUpdatePage extends ConsumerWidget {
   TodoUpdatePage({super.key, required this.todo});
@@ -21,10 +22,10 @@ class TodoUpdatePage extends ConsumerWidget {
     final todoNotifier = ref.watch(todoNotifierProvider(todo).notifier);
 
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Update Todo Post'),
-        backgroundColor: Colors.grey.shade400,
+        title: Text(AppLocalizations.of(context)!.updateTodoPost),
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -52,7 +53,7 @@ class TodoUpdatePage extends ConsumerWidget {
                   isRequired: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Title is required.';
+                      return ' ${AppLocalizations.of(context)!.titleRequired}';
                     }
                     return null;
                   },
@@ -61,14 +62,14 @@ class TodoUpdatePage extends ConsumerWidget {
                   height: 20,
                 ),
                 CustomTextField(
-                  label: 'Description',
+                  label: AppLocalizations.of(context)!.description,
                   onChanged: todoNotifier.setDescription,
                   initialValue: todoState.description,
                   isRequired: true,
                   maxLength: 50,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Description is required.';
+                      return AppLocalizations.of(context)!.descriptionRequired;
                     }
                     return null;
                   },
@@ -88,7 +89,7 @@ class TodoUpdatePage extends ConsumerWidget {
                         : const Text(
                             "Private",
                             style: TextStyle(
-                                color: Colors.black,
+                                color: Colors.grey,
                                 fontWeight: FontWeight.bold),
                           ),
                     const SizedBox(
@@ -101,7 +102,7 @@ class TodoUpdatePage extends ConsumerWidget {
                   height: 40,
                 ),
                 CustomButton(
-                  label: isLoading ? '' : 'Update',
+                  label: isLoading ? '' : AppLocalizations.of(context)!.update,
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       ref.read(loadingProvider.notifier).state = true;
@@ -111,24 +112,25 @@ class TodoUpdatePage extends ConsumerWidget {
                         if (context.mounted) {
                           showCustomDialogForm(
                             context: context,
-                            title: 'Success',
-                            content: const Column(
+                            title: AppLocalizations.of(context)!.success,
+                            content: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.verified_outlined,
+                                const Icon(Icons.verified_outlined,
                                     color: Colors.amber, size: 100),
-                                SizedBox(height: 16),
+                                const SizedBox(height: 16),
                                 Text(
-                                  'Todo Post is successfully Updated!',
-                                  style: TextStyle(
+                                  AppLocalizations.of(context)!
+                                      .successTodoUpdate,
+                                  style: const TextStyle(
                                     color: Colors.greenAccent,
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
-                                SizedBox(height: 8),
-                                Text('Be Enjoy!'),
+                                const SizedBox(height: 8),
+                                Text(AppLocalizations.of(context)!.successSpan),
                               ],
                             ),
                             onSave: () async {

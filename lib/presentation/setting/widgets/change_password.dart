@@ -3,6 +3,7 @@ import 'package:product_management/provider/user/user_view_model.dart';
 import 'package:product_management/utils/constants/messages.dart';
 import 'package:product_management/utils/extensions/exception_msg.dart';
 import 'package:product_management/widgets/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 Future<void> showChangePasswordDialog(
     BuildContext context, UserViewModel userNotifier) {
@@ -12,7 +13,7 @@ Future<void> showChangePasswordDialog(
 
   return showCustomDialogForm(
     context: context,
-    title: 'Change Password',
+    title: AppLocalizations.of(context)!.changePassword,
     content: Form(
       key: formKey,
       child: Column(
@@ -20,7 +21,7 @@ Future<void> showChangePasswordDialog(
         children: [
           CustomTextField(
             maxLength: 26,
-            label: 'Old Password',
+            label: AppLocalizations.of(context)!.oldPassword,
             initialValue: '',
             onChanged: (value) => oldPassword = value,
             obscured: true,
@@ -29,7 +30,7 @@ Future<void> showChangePasswordDialog(
           const SizedBox(height: 16),
           CustomTextField(
             maxLength: 26,
-            label: 'New Password',
+            label: AppLocalizations.of(context)!.newPassword,
             initialValue: '',
             onChanged: (value) => newPassword = value,
             obscured: true,
@@ -38,13 +39,13 @@ Future<void> showChangePasswordDialog(
           const SizedBox(height: 16),
           CustomTextField(
             maxLength: 26,
-            label: 'Confirm Password',
+            label: AppLocalizations.of(context)!.confirmPassword,
             initialValue: '',
             obscured: true,
             isRequired: true,
             validator: (value) {
               if (value != newPassword) {
-                return 'Passwords do not match.';
+                return AppLocalizations.of(context)!.passwordsNotMatch;
               }
               return null;
             },

@@ -24,18 +24,18 @@ class CustomButtonState extends State<CustomButton> {
       child: Container(
         padding: const EdgeInsets.all(25),
         decoration: BoxDecoration(
-          color: Colors.black,
+          color: Theme.of(context).colorScheme.onSecondary,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Center(
           child: _isLoading
-              ? const CircularProgressIndicator(
-                  color: Colors.white,
+              ?  CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.onPrimary,
                 )
               : Text(
                   widget.label,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style:  TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimary,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),

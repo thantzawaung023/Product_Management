@@ -7,6 +7,7 @@ import 'package:product_management/provider/todo/todo_notifier.dart';
 import 'package:product_management/widgets/common_dialog.dart';
 import 'package:product_management/widgets/custom_btn.dart';
 import 'package:product_management/widgets/custom_text_field.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class TodoListAddPage extends ConsumerWidget {
   TodoListAddPage({super.key, this.todo});
@@ -19,12 +20,13 @@ class TodoListAddPage extends ConsumerWidget {
     final isLoading = ref.watch(loadingProvider);
     final todoState = ref.watch(todoNotifierProvider(todo));
     final todoNotifier = ref.watch(todoNotifierProvider(todo).notifier);
+    final localization = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Add TODO Post'),
-        backgroundColor: Colors.grey.shade400,
+        title: Text(localization.addTodoPost),
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -45,13 +47,13 @@ class TodoListAddPage extends ConsumerWidget {
                   height: 30,
                 ),
                 CustomTextField(
-                  label: 'Title',
+                  label: localization.title,
                   onChanged: todoNotifier.setTitle,
                   isRequired: true,
                   maxLength: 25,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Title is required.';
+                      return localization.titleRequired;
                     }
                     return null;
                   },
@@ -60,13 +62,13 @@ class TodoListAddPage extends ConsumerWidget {
                   height: 20,
                 ),
                 CustomTextField(
-                  label: 'Description',
+                  label: localization.description,
                   onChanged: todoNotifier.setDescription,
                   isRequired: true,
                   maxLength: 50,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Description is required.';
+                      return localization.descriptionRequired;
                     }
                     return null;
                   },
@@ -77,15 +79,15 @@ class TodoListAddPage extends ConsumerWidget {
                 Row(
                   children: [
                     todoState.isPublish
-                        ? const Text(
-                            "Publish",
-                            style: TextStyle(
+                        ? Text(
+                            localization.publish,
+                            style: const TextStyle(
                                 color: Colors.green,
                                 fontWeight: FontWeight.bold),
                           )
-                        : const Text(
-                            "Private",
-                            style: TextStyle(
+                        : Text(
+                            localization.private,
+                            style: const TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold),
                           ),
@@ -99,7 +101,7 @@ class TodoListAddPage extends ConsumerWidget {
                   height: 40,
                 ),
                 CustomButton(
-                  label: isLoading ? '' : 'Save',
+                  label: isLoading ? '' : localization.save,
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       ref.read(loadingProvider.notifier).state = true;
@@ -109,24 +111,24 @@ class TodoListAddPage extends ConsumerWidget {
                         if (context.mounted) {
                           showCustomDialogForm(
                             context: context,
-                            title: 'Success',
-                            content: const Column(
+                            title: localization.success,
+                            content: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.verified_outlined,
+                                const Icon(Icons.verified_outlined,
                                     color: Colors.amber, size: 100),
-                                SizedBox(height: 16),
+                                const SizedBox(height: 16),
                                 Text(
-                                  'New Todo Post is successfully Created!',
-                                  style: TextStyle(
+                                 localization.successTodoAdd,
+                                  style: const TextStyle(
                                     color: Colors.greenAccent,
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
-                                SizedBox(height: 8),
-                                Text('Be Enjoy!'),
+                                const SizedBox(height: 8),
+                                Text(localization.successSpan),
                               ],
                             ),
                             onSave: () async {

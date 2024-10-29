@@ -22,9 +22,9 @@ class UserListTile extends StatelessWidget {
     final isSelected = selectedItems.contains(user.id);
     return Container(
       padding: const EdgeInsets.only(left: 8, bottom: 8, top: 8),
-      margin: const EdgeInsets.only(bottom: 0, left: 10, right: 10,top: 15),
+      margin: const EdgeInsets.only(bottom: 0, left: 10, right: 10, top: 15),
       decoration: BoxDecoration(
-        color: Colors.amber.withOpacity(0.5),
+        color: Theme.of(context).primaryColor,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(25),
           bottomRight: Radius.circular(25),
@@ -38,7 +38,10 @@ class UserListTile extends StatelessWidget {
       ),
       child: ListTile(
         title: Text(user.name.toString()),
-        subtitle: Text(user.email),
+        subtitle: Text(
+          user.email,
+          style: const TextStyle(overflow: TextOverflow.ellipsis),
+        ),
         trailing: IconButton(
           onPressed: () {
             Navigator.of(context).push(
@@ -51,6 +54,7 @@ class UserListTile extends StatelessWidget {
         ),
         leading: isSelectionMode
             ? Checkbox(
+              activeColor: Colors.amber,
                 value: isSelected,
                 onChanged: (bool? value) {
                   onItemSelect(user.id, value ?? false);

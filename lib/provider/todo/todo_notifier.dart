@@ -110,6 +110,9 @@ class TodoNotifier extends StateNotifier<TodoState> {
     try {
       final user = auth.FirebaseAuth.instance.currentUser;
       if (state.imageData != null) {
+        if (state.image != null) {
+          // await _todoRepository.deleteFromStorage(state.image!);
+        }
         final url = await _todoRepository.uploadImage(
             picture: state.imageData!, type: 'jpg');
         setImageUrl(url);

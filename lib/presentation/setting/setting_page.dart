@@ -6,12 +6,15 @@ import 'package:product_management/config/config.dart';
 import 'package:product_management/data/entities/user/user.dart';
 import 'package:product_management/presentation/login/login_page.dart';
 import 'package:product_management/presentation/setting/widgets/change_password.dart';
+import 'package:product_management/presentation/setting/widgets/language_dropdwon.dart';
+import 'package:product_management/provider/Them/them_provider.dart';
 import 'package:product_management/provider/authentication/auth_view_model.dart';
 import 'package:product_management/provider/loading/loading_provider.dart';
 import 'package:product_management/provider/user/user_view_model.dart';
 import 'package:product_management/utils/extensions/exception_msg.dart';
 import 'package:product_management/utils/storage/provider_setting.dart';
 import 'package:product_management/widgets/common_dialog.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class SettingPage extends HookConsumerWidget {
   const SettingPage({super.key, required this.userId});
@@ -23,7 +26,12 @@ class SettingPage extends HookConsumerWidget {
         .watch(userProviderStream(userId)); // Watch user data based on userId
     final currentUser = auth.FirebaseAuth.instance.currentUser;
     final passwordInputController = useTextEditingController();
+    final isLightMode = ref.watch(themeProvider) == ThemeMode.light;
     final providerId = useState<String?>('');
+    final supportedLocales = {
+      const Locale('en'): AppLocalizations.of(context)!.languageEnglish,
+      const Locale('my'): AppLocalizations.of(context)!.languageMyanmar,
+    };
 
     // Fetch the providerId when the widget builds
     useEffect(() {
@@ -39,8 +47,8 @@ class SettingPage extends HookConsumerWidget {
       final authStateNotifier = ref.watch(authNotifierProvider.notifier);
       await accountDeleteConfirmationDialog(
         context: context,
-        title: 'Account Delete',
-        message: 'Deleting your account will erase all data.',
+        title: AppLocalizations.of(context)!.deleteAccount,
+        message: AppLocalizations.of(context)!.deleteAccountMessage,
         password: providerId.value == 'password',
         passwordController: passwordInputController,
         okFunction: () async {
@@ -66,11 +74,11 @@ class SettingPage extends HookConsumerWidget {
           } on Exception catch (e) {
             logger.e("Delete Error: $e");
             if (!context.mounted) return;
-            showSnackBar(context, e.getMessage,Colors.red);
+            showSnackBar(context, e.getMessage, Colors.red);
           }
         },
-        okButton: 'Dlete Now',
-        cancelButton: 'Cancel',
+        okButton: AppLocalizations.of(context)!.deleteNow,
+        cancelButton: AppLocalizations.of(context)!.cancel,
       );
     }
 
@@ -79,7 +87,7 @@ class SettingPage extends HookConsumerWidget {
       // Show confirmation dialog
       final shouldDelete = await showConfirmDialog(
         context: context,
-        message: 'Are you sure you want to Logout?',
+        message: AppLocalizations.of(context)!.confirmLogout,
       );
       if (shouldDelete == true) {
         try {
@@ -94,7 +102,7 @@ class SettingPage extends HookConsumerWidget {
           }
         } catch (e) {
           if (context.mounted) {
-            showSnackBar(context, 'Logout failed: ${e.toString()}',Colors.red);
+            showSnackBar(context, 'Logout failed: ${e.toString()}', Colors.red);
           }
         }
       }
@@ -108,10 +116,11 @@ class SettingPage extends HookConsumerWidget {
     }
 
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Setting'),
-        backgroundColor: Colors.grey.shade400,
+        title: Text(AppLocalizations.of(context)!.setting),
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        shadowColor: Theme.of(context).appBarTheme.shadowColor,
         actions: const [],
       ),
       body: userAsyncValue.when(
@@ -136,11 +145,12 @@ class SettingPage extends HookConsumerWidget {
                 const SizedBox(height: 20),
                 Container(
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14),
-                      color: Colors.grey.withOpacity(0.8)),
+                    borderRadius: BorderRadius.circular(14),
+                    color: Theme.of(context).primaryColor,
+                  ),
                   child: ListTile(
                     leading: const Icon(Icons.password),
-                    title: const Text('Change Password'),
+                    title: Text(AppLocalizations.of(context)!.changePassword),
                     titleTextStyle: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 17),
                     iconColor: Colors.white,
@@ -152,10 +162,47 @@ class SettingPage extends HookConsumerWidget {
                 Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(14),
-                      color: Colors.grey.withOpacity(0.8)),
+                      color: Theme.of(context).primaryColor),
+                  child: SwitchListTile(
+                    activeColor: Colors.white,
+                    inactiveThumbColor: Colors.black,
+                    inactiveTrackColor: Colors.grey[600],
+                    secondary: const SizedBox(
+                      width: 40,
+                      height: 80,
+                      child: Icon(
+                        Icons.light_mode,
+                        color: Colors.white,
+                      ),
+                    ),
+                    title: const Text(
+                      'Light Mode',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17,
+                          color: Colors.white),
+                    ),
+                    value: isLightMode,
+                    onChanged: (value) {
+                      ref.watch(themeProvider.notifier).state =
+                          value ? ThemeMode.light : ThemeMode.dark;
+                    },
+                    // Call changePassword with user
+                  ),
+                ),
+                const Divider(),
+                LanguageDropdownTile(
+                  supportedLocales: supportedLocales,
+                  ref: ref,
+                ),
+                const Divider(),
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(14),
+                      color: Theme.of(context).primaryColor),
                   child: ListTile(
                       leading: const Icon(Icons.delete),
-                      title: const Text('Delete Account'),
+                      title: Text(AppLocalizations.of(context)!.deleteAccount),
                       titleTextStyle: const TextStyle(
                           color: Colors.red,
                           fontWeight: FontWeight.bold,
@@ -169,10 +216,10 @@ class SettingPage extends HookConsumerWidget {
                 Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(14),
-                      color: Colors.grey.withOpacity(0.8)),
+                      color: Theme.of(context).primaryColor),
                   child: ListTile(
                     leading: const Icon(Icons.logout),
-                    title: const Text('Logout'),
+                    title: Text(AppLocalizations.of(context)!.logout),
                     titleTextStyle: const TextStyle(
                         color: Colors.red,
                         fontWeight: FontWeight.bold,
@@ -180,7 +227,7 @@ class SettingPage extends HookConsumerWidget {
                     iconColor: Colors.red,
                     onTap: logOut,
                   ),
-                )
+                ),
               ],
             ),
           );

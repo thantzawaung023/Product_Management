@@ -5,6 +5,7 @@ import 'package:product_management/data/entities/user/user.dart';
 import 'package:product_management/provider/loading/loading_provider.dart';
 import 'package:product_management/provider/user/user_view_model.dart';
 import 'package:product_management/widgets/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class UserCreatePage extends ConsumerWidget {
   UserCreatePage({super.key, this.user});
@@ -14,14 +15,15 @@ class UserCreatePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final localizations = AppLocalizations.of(context)!;
     final isLoading = ref.watch(loadingProvider);
     final userViewModelNotifier =
         ref.watch(userViewModelNotifierProvider(user).notifier);
 
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.grey.shade400,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -41,12 +43,12 @@ class UserCreatePage extends ConsumerWidget {
                   height: 20,
                 ),
                 CustomTextField(
-                  label: 'Email',
+                  label: localizations.email,
                   onChanged: userViewModelNotifier.setEmail,
                   isRequired: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Email is required.';
+                      return localizations.emailRequired;
                     }
                     return null;
                   },
@@ -55,12 +57,12 @@ class UserCreatePage extends ConsumerWidget {
                   height: 15,
                 ),
                 CustomTextField(
-                  label: 'Name',
+                  label: localizations.name,
                   onChanged: userViewModelNotifier.setName,
                   isRequired: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Name is required.';
+                      return localizations.nameRequired;
                     }
                     return null;
                   },
@@ -69,12 +71,12 @@ class UserCreatePage extends ConsumerWidget {
                   height: 15,
                 ),
                 CustomTextField(
-                  label: 'Address Name',
+                  label: localizations.addressName,
                   onChanged: userViewModelNotifier.setAddressName,
                   isRequired: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Address is required.';
+                      return localizations.addressNameRequired;
                     }
                     return null;
                   },
@@ -83,12 +85,12 @@ class UserCreatePage extends ConsumerWidget {
                   height: 15,
                 ),
                 CustomTextField(
-                  label: 'Address Location',
+                  label: localizations.addressLocation,
                   onChanged: userViewModelNotifier.setAddressLocation,
                   isRequired: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Address Location is required.';
+                      return localizations.addressLocationRequired;
                     }
                     return null;
                   },
@@ -97,13 +99,13 @@ class UserCreatePage extends ConsumerWidget {
                   height: 15,
                 ),
                 CustomTextField(
-                  label: 'Password',
+                  label: localizations.password,
                   onChanged: userViewModelNotifier.setPassword,
                   isRequired: true,
                   obscured: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Password is required.';
+                      return localizations.passwordRequired;
                     }
                     return null;
                   },
@@ -113,7 +115,7 @@ class UserCreatePage extends ConsumerWidget {
                 ),
                 const SizedBox(height: 20),
                 CustomButton(
-                  label: isLoading ? '' : 'Save',
+                  label: isLoading ? '' : localizations.save,
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       ref.read(loadingProvider.notifier).state = true;
@@ -123,24 +125,24 @@ class UserCreatePage extends ConsumerWidget {
                         if (context.mounted) {
                           showCustomDialogForm(
                             context: context,
-                            title: 'Success',
-                            content: const Column(
+                            title: localizations.success,
+                            content: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.verified_outlined,
+                                const Icon(Icons.verified_outlined,
                                     color: Colors.amber, size: 100),
-                                SizedBox(height: 16),
+                                const SizedBox(height: 16),
                                 Text(
-                                  'User Creation is successful!',
-                                  style: TextStyle(
+                                  localizations.successUserCreate,
+                                  style: const TextStyle(
                                     color: Colors.greenAccent,
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
-                                SizedBox(height: 8),
-                                Text('Please Login And Verify Email!'),
+                                const SizedBox(height: 8),
+                                Text(localizations.verifyEmail),
                               ],
                             ),
                             onSave: () =>

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class CustomTextField extends StatelessWidget {
   const CustomTextField({
@@ -41,7 +42,7 @@ class CustomTextField extends StatelessWidget {
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey.shade400),
           ),
-          fillColor: Colors.grey.shade200,
+          fillColor: Theme.of(context).colorScheme.surface,
           filled: true,
           hintText: label,
           hintStyle: TextStyle(color: Colors.grey[600])),
@@ -49,7 +50,7 @@ class CustomTextField extends StatelessWidget {
       validator: validator ??
           (value) {
             if (isRequired && (value == null || value.isEmpty)) {
-              return '$label is a required field.';
+              return '$label ${AppLocalizations.of(context)!.isRequired}';
             }
             return null;
           },

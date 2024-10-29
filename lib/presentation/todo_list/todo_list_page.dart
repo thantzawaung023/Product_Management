@@ -14,9 +14,9 @@ class TodoListPageState extends ConsumerState<TodoListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.grey.shade400,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         actions: [
           Padding(
             padding: const EdgeInsets.all(5.0),
@@ -26,10 +26,10 @@ class TodoListPageState extends ConsumerState<TodoListPage> {
                     return TodoListAddPage();
                   }));
                 },
-                icon: const Icon(
+                icon: Icon(
                   Icons.assignment_add,
                   size: 30,
-                  color: Colors.black45,
+                  color: Theme.of(context).colorScheme.secondary,
                 )),
           )
         ],
@@ -37,14 +37,19 @@ class TodoListPageState extends ConsumerState<TodoListPage> {
       body: const SingleChildScrollView(
         child: Column(
           children: [
-            //Carousel Slide
-            CustomCarouselSlider(),
-            SizedBox(height: 15),
+            Column(
+              children: [
 
-            //To Do List Card
-            Padding(
-              padding: EdgeInsets.all(12),
-              child: ToDoList(),
+                //Carousel Slide
+                CustomCarouselSlider(),
+                SizedBox(height: 15),
+
+                //To Do List Card
+                Padding(
+                  padding: EdgeInsets.all(12),
+                  child: ToDoList(),
+                ),
+              ],
             ),
           ],
         ),

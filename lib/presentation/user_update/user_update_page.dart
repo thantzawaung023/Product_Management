@@ -4,8 +4,8 @@ import 'package:product_management/data/entities/user/user.dart';
 import 'package:product_management/presentation/user_update/widgets/profile_image.dart';
 import 'package:product_management/provider/loading/loading_provider.dart';
 import 'package:product_management/provider/user/user_view_model.dart';
-import 'package:product_management/utils/utils.dart';
 import 'package:product_management/widgets/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class UserUpdatePage extends ConsumerWidget {
   UserUpdatePage({super.key, required this.user});
@@ -15,15 +15,16 @@ class UserUpdatePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final localization = AppLocalizations.of(context)!;
     final userViewModelState = ref.watch(userViewModelNotifierProvider(user));
     final userViewModelNotifier =
         ref.watch(userViewModelNotifierProvider(user).notifier);
 
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Update User'),
-        backgroundColor: Colors.grey.shade400,
+        title: Text(localization.updateUser),
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -40,30 +41,17 @@ class UserUpdatePage extends ConsumerWidget {
                   viewModel: userViewModelNotifier,
                   context: context,
                 ),
-                // const SizedBox(height: 20),
-                // CustomTextField(
-                //   label: 'Email',
-                //   initialValue: userViewModelState.email,
-                //   onChanged: userViewModelNotifier.setEmail,
-                //   isRequired: true,
-                //   validator: (value) {
-                //     if (value == null || value.isEmpty) {
-                //       return 'Email is required.';
-                //     }
-                //     return null;
-                //   },
-                // ),
                 const SizedBox(
                   height: 15,
                 ),
                 CustomTextField(
-                  label: 'Name',
+                  label: localization.name,
                   initialValue: userViewModelState.name,
                   onChanged: userViewModelNotifier.setName,
                   isRequired: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Name is required.';
+                      return localization.nameRequired;
                     }
                     return null;
                   },
@@ -72,13 +60,13 @@ class UserUpdatePage extends ConsumerWidget {
                   height: 15,
                 ),
                 CustomTextField(
-                  label: 'Address Name',
+                  label: localization.addressName,
                   initialValue: userViewModelState.address?.name ?? '',
                   onChanged: userViewModelNotifier.setAddressName,
                   isRequired: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Address is required.';
+                      return localization.addressNameRequired;
                     }
                     return null;
                   },
@@ -87,13 +75,13 @@ class UserUpdatePage extends ConsumerWidget {
                   height: 15,
                 ),
                 CustomTextField(
-                  label: 'Address Location',
+                  label: localization.addressLocation,
                   initialValue: userViewModelState.address?.location ?? '',
                   onChanged: userViewModelNotifier.setAddressLocation,
                   isRequired: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Address Location is required.';
+                      return localization.addressLocationRequired;
                     }
                     return null;
                   },
@@ -101,10 +89,9 @@ class UserUpdatePage extends ConsumerWidget {
                 const SizedBox(
                   height: 15,
                 ),
-
                 const SizedBox(height: 20),
                 CustomButton(
-                  label: 'Save',
+                  label: localization.save,
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       ref
@@ -113,8 +100,8 @@ class UserUpdatePage extends ConsumerWidget {
                       try {
                         await userViewModelNotifier.updateUser();
                         if (context.mounted) {
-                          showSnackBar(
-                              context, Messages.userSaveSuccess, Colors.green);
+                          showSnackBar(context, localization.successUserUpdate,
+                              Colors.green);
                           Navigator.of(context).pop();
                         }
                       } catch (e) {

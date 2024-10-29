@@ -1,8 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:product_management/provider/todo/todo_notifier.dart';
 import 'package:product_management/provider/todo/todo_state.dart';
-import 'package:product_management/utils/utils.dart';
 import 'package:product_management/widgets/common_dialog.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class TodoImageSection extends StatelessWidget {
   const TodoImageSection(
@@ -27,7 +28,8 @@ class TodoImageSection extends StatelessWidget {
             final image = await todoNotifier.imageData();
             if (image == null) {
               if (context.mounted) {
-                showSnackBar(context, Messages.validateImgMsg,Colors.red);
+                showSnackBar(context,
+                    AppLocalizations.of(context)!.validateImgMsg, Colors.red);
               }
             } else {
               todoNotifier.setImageData(image);
@@ -36,17 +38,25 @@ class TodoImageSection extends StatelessWidget {
           child: CircleAvatar(
             radius: 60,
             backgroundColor: Colors.grey[500],
-            backgroundImage: imageData != null
-                ? MemoryImage(imageData)
-                : (imageUrl != null && imageUrl.isNotEmpty)
-                    ? NetworkImage(imageUrl)
-                    : null,
-            child: (imageData == null && (imageUrl == null || imageUrl.isEmpty))
-                ? const Icon(
-                    Icons.camera_alt,
-                    size: 40,
-                    color: Colors.white,
-                  )
+            backgroundImage: imageData != null ? MemoryImage(imageData) : null,
+            child: imageData == null
+                ? (imageUrl != null && imageUrl.isNotEmpty)
+                    ? CachedNetworkImage(
+                        imageUrl: imageUrl,
+                        placeholder: (context, url) =>
+                            const CircularProgressIndicator(), // Show loader
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error), // Handle error
+                        imageBuilder: (context, imageProvider) => CircleAvatar(
+                          radius: 60,
+                          backgroundImage: imageProvider, // Use fetched image
+                        ),
+                      )
+                    : const Icon(
+                        Icons.camera_alt,
+                        size: 40,
+                        color: Colors.white,
+                      )
                 : null,
           ),
         ),
@@ -54,7 +64,7 @@ class TodoImageSection extends StatelessWidget {
           height: 10,
         ),
         Text(
-          Messages.selectImg,
+          AppLocalizations.of(context)!.selectImage,
           style: const TextStyle(color: Colors.grey),
         ),
       ],

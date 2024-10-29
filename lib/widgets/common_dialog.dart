@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:product_management/utils/extensions/exception_msg.dart';
 import 'package:product_management/widgets/custom_text_field.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 Future<bool> showConfirmDialog({
   required BuildContext context,
@@ -14,13 +15,13 @@ Future<bool> showConfirmDialog({
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).colorScheme.primary,
             title: Text(message),
             actions: <Widget>[
               TextButton(
-                child: const Text(
-                  'CANCEL',
-                  style: TextStyle(
+                child: Text(
+                  AppLocalizations.of(context)!.cancel,
+                  style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF00BBEF),
                   ),
@@ -39,9 +40,9 @@ Future<bool> showConfirmDialog({
                 onPressed: () async {
                   Navigator.of(context).pop(true); // Return true on OK
                 },
-                child: const Text(
-                  'Confirm',
-                  style: TextStyle(
+                child: Text(
+                  AppLocalizations.of(context)!.confirm,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
@@ -119,7 +120,7 @@ Future<void> showCustomDialogForm({
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
-              backgroundColor: Colors.white,
+              backgroundColor:  Theme.of(context).colorScheme.primary,
               title: Text(
                 title,
                 style: const TextStyle(
@@ -139,9 +140,9 @@ Future<void> showCustomDialogForm({
                       : () {
                           Navigator.of(context).pop();
                         },
-                  child: const Text(
-                    'Cancel',
-                    style: TextStyle(
+                  child: Text(
+                    AppLocalizations.of(context)!.cancel,
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                       color: Color(0xFF00BBEF),
                     ),
@@ -179,9 +180,9 @@ Future<void> showCustomDialogForm({
                             color: Color(0xFF017256),
                           ),
                         )
-                      : const Text(
-                          'Save',
-                          style: TextStyle(
+                      : Text(
+                          AppLocalizations.of(context)!.save,
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
@@ -321,16 +322,16 @@ Future<void> accountDeleteConfirmationDialog({
                     padding: const EdgeInsets.only(top: 15, bottom: 5),
                     child: Column(
                       children: [
-                        const Text(
-                          'Please enter your password to continue.',
-                          style: TextStyle(
+                        Text(
+                          AppLocalizations.of(context)!.enterPassword,
+                          style: const TextStyle(
                             fontSize: 13,
                           ),
                           textAlign: TextAlign.center,
                         ),
                         const Gap(5),
                         CustomTextField(
-                          label: 'Password ',
+                          label: AppLocalizations.of(context)!.password,
                           isRequired: true,
                           controller: passwordController!,
                           obscured: true,

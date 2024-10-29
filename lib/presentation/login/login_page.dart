@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:product_management/config/app.dart';
 import 'package:product_management/config/navigator.dart';
 import 'package:product_management/presentation/forget_password/forget_password_page.dart';
 import 'package:product_management/presentation/login/widgets/square_tile.dart';
@@ -11,12 +10,14 @@ import 'package:product_management/presentation/varification/verification_page.d
 import 'package:product_management/provider/authentication/auth_view_model.dart';
 import 'package:product_management/provider/loading/loading_provider.dart';
 import 'package:product_management/widgets/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class LoginPage extends HookConsumerWidget {
   const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final localizaton = AppLocalizations.of(context)!;
     final authViewModelNotifier = ref.watch(authNotifierProvider.notifier);
     final emailController =
         useTextEditingController(); // Using hook for controller
@@ -70,7 +71,7 @@ class LoginPage extends HookConsumerWidget {
     }
 
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -86,11 +87,11 @@ class LoginPage extends HookConsumerWidget {
                   // Email Text Box
                   CustomTextField(
                       controller: emailController,
-                      label: 'Email',
+                      label: localizaton.email,
                       isRequired: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Email is required.';
+                          return localizaton.emailRequired;
                         }
                         return null;
                       }),
@@ -99,12 +100,12 @@ class LoginPage extends HookConsumerWidget {
                   // Password Text Box
                   CustomTextField(
                       controller: passwordController,
-                      label: 'Password',
+                      label: localizaton.password,
                       obscured: true,
                       isRequired: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Password is required.';
+                          return localizaton.passwordRequired;
                         }
                         return null;
                       }),
@@ -121,9 +122,9 @@ class LoginPage extends HookConsumerWidget {
                         );
                         formKey.currentState?.reset();
                       },
-                      child: const Text(
-                        'Forgot your password? ',
-                        style: TextStyle(
+                      child: Text(
+                        localizaton.forgetPassword,
+                        style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
                             color: Colors.black87),
@@ -133,7 +134,7 @@ class LoginPage extends HookConsumerWidget {
                   const SizedBox(height: 30),
 
                   // Login Btn
-                  CustomButton(label: 'Login', onPressed: login),
+                  CustomButton(label: localizaton.login, onPressed: login),
                   const SizedBox(height: 40),
 
                   Row(
@@ -143,7 +144,7 @@ class LoginPage extends HookConsumerWidget {
                               Divider(thickness: 0.6, color: Colors.grey[400])),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Text('or continue with',
+                        child: Text(localizaton.or,
                             style: TextStyle(color: Colors.grey[700])),
                       ),
                       Expanded(
@@ -222,8 +223,8 @@ class LoginPage extends HookConsumerWidget {
                                 builder: (context) => const RegisterPage()));
                       }
                     },
-                    child: const Text("Don't have an account? Register",
-                        style: TextStyle(fontSize: 16)),
+                    child: Text(localizaton.doseNotHaveAcc,
+                        style: const TextStyle(fontSize: 16)),
                   ),
                 ],
               ),

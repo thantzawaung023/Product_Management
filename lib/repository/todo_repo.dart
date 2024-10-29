@@ -17,6 +17,7 @@ abstract class BaseTodoRepository {
   Future<void> updateTodo(Todo todo);
   Future<void> updateLikes(id, newLikesCount, likedByUsers);
   Stream<List<Todo?>> getTopTodo();
+  Future<void> deleteFromStorage(String url);
 }
 
 // Provider
@@ -133,6 +134,16 @@ class TodoRepositoryImpl implements BaseTodoRepository {
     } on Exception catch (e) {
       logger.e('Error get Top Todo List: $e');
       return Stream.error('$e');
+    }
+  }
+
+  @override
+  Future<void> deleteFromStorage(String url) async {
+    try {
+      await _storage.refFromURL(url).delete();
+    } on Exception catch (e) {
+      logger.e('Error delete todo image: $e');
+      throw Exception('Failed to delete todo image: $e');
     }
   }
 }

@@ -4,7 +4,6 @@ import 'package:product_management/presentation/setting/setting_page.dart';
 import 'package:product_management/presentation/todo_list/todo_list_page.dart';
 import 'package:product_management/presentation/user/user_page.dart';
 
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.userId});
   final String userId;
@@ -34,9 +33,7 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(224, 224, 224, 1),
-      body:
-       Center(
+      body: Center(
         child: _pages.elementAt(_selectedIndex), // Display selected page
       ),
       bottomNavigationBar: NavigationBar(
@@ -60,8 +57,9 @@ class HomePageState extends State<HomePage> {
         ],
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         selectedIndex: _selectedIndex,
-        backgroundColor: Colors.grey.shade400,
-        indicatorColor: Colors.grey[500],
+        backgroundColor: Theme.of(context).bottomAppBarTheme.color,
+        shadowColor: Colors.grey[700],
+        indicatorColor: Theme.of(context).bottomAppBarTheme.shadowColor,
         onDestinationSelected: (int index) {
           setState(() {
             _selectedIndex = index;

@@ -6,6 +6,7 @@ import 'package:product_management/data/entities/user_provider_data/user_provide
 import 'package:product_management/provider/user/user_view_model.dart';
 import 'package:product_management/utils/extensions/exception_msg.dart';
 import 'package:product_management/widgets/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class BuildDetailCard extends ConsumerWidget {
   final User userData; // Required User data
@@ -19,6 +20,7 @@ class BuildDetailCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Card(
+      color: Theme.of(context).primaryColor,
       elevation: 2.0,
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Padding(
@@ -26,20 +28,22 @@ class BuildDetailCard extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'User Information',
-              style: TextStyle(
-                fontSize: 18,
+            Text(
+              AppLocalizations.of(context)!.userInfo,
+              style: const TextStyle(
+                fontSize: 19,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
             buildUserInfoRow(
-              title: 'Name: ${userData.name}',
+              title: '${AppLocalizations.of(context)!.name} : ${userData.name}',
+              titleColor: Theme.of(context).colorScheme.onSecondary,
+              iconColor: Theme.of(context).colorScheme.secondary,
               icon: Icons.person,
               onPressed: () => showEditFieldDialog(
                 context: context,
-                label: 'Edit Username',
+                label: AppLocalizations.of(context)!.editName,
                 initialValue: userProvider?.userName ?? '',
                 onSave: (value) async {
                   try {
@@ -51,7 +55,7 @@ class BuildDetailCard extends ConsumerWidget {
                     }
                   } on Exception catch (e) {
                     if (!context.mounted) return;
-                    showSnackBar(context, e.getMessage,Colors.red);
+                    showSnackBar(context, e.getMessage, Colors.red);
                   }
                 },
               ),
@@ -61,8 +65,10 @@ class BuildDetailCard extends ConsumerWidget {
               title: userData.address != null &&
                       userData.address!.name.isNotEmpty &&
                       userData.address!.location.isNotEmpty
-                  ? 'Address: ${userData.address!.name}, ${userData.address!.location}'
-                  : 'Address: Not Available',
+                  ? '${AppLocalizations.of(context)!.address} : ${userData.address!.name}, ${userData.address!.location}'
+                  : AppLocalizations.of(context)!.notAvailableAddress,
+              titleColor: Theme.of(context).colorScheme.onSecondary,
+              iconColor: Theme.of(context).colorScheme.secondary,
               icon: Icons.location_on,
               onPressed: () {
                 // Open dialog to update address
@@ -81,7 +87,7 @@ class BuildDetailCard extends ConsumerWidget {
                       }
                     } on Exception catch (e) {
                       if (!context.mounted) return;
-                      showSnackBar(context, e.getMessage,Colors.red);
+                      showSnackBar(context, e.getMessage, Colors.red);
                     }
                   },
                 );
@@ -89,7 +95,10 @@ class BuildDetailCard extends ConsumerWidget {
             ),
             const Divider(),
             buildUserInfoRow(
-              title: 'Joined: ${userData.createdAt}',
+              title:
+                  '${AppLocalizations.of(context)!.joined} : ${userData.createdAt}',
+              titleColor: Theme.of(context).colorScheme.onSecondary,
+              iconColor: Theme.of(context).colorScheme.secondary,
               icon: Icons.calendar_today,
               onPressed: () {},
             ),
@@ -148,7 +157,7 @@ Widget buildProfileHeader({
           children: [
             CircleAvatar(
               radius: 50,
-              backgroundColor: Colors.grey[400],
+              backgroundColor: Theme.of(context).colorScheme.primary,
               child: userData.profile != null && userData.profile!.isNotEmpty
                   ? ClipOval(
                       child: CachedNetworkImage(
@@ -194,7 +203,7 @@ Widget buildProfileHeader({
                 child: Container(
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
-                    color: Colors.black54,
+                    color: Theme.of(context).colorScheme.onSecondary,
                     borderRadius: BorderRadius.circular(30),
                   ),
                   child: const Icon(
@@ -216,7 +225,7 @@ Widget buildProfileHeader({
               margin: const EdgeInsets.only(top: 8),
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: Colors.black54,
+                color: Colors.amber.withOpacity(0.6),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -224,11 +233,11 @@ Widget buildProfileHeader({
                 children: [
                   GestureDetector(
                     onTap: onUploadPressed,
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 4),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
                       child: Text(
-                        'Upload a profile',
-                        style: TextStyle(
+                        AppLocalizations.of(context)!.uploadProfile,
+                        style: const TextStyle(
                           color: Color(0xFFFBFDFD),
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
@@ -247,11 +256,11 @@ Widget buildProfileHeader({
                     const SizedBox(width: 8),
                     GestureDetector(
                       onTap: onRemovePressed,
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 4),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
                         child: Text(
-                          'Remove profile',
-                          style: TextStyle(
+                          AppLocalizations.of(context)!.removeProfile,
+                          style: const TextStyle(
                             color: Color(0xFFFBFDFD),
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
@@ -306,7 +315,7 @@ Future<void> showEditFieldDialog(
             isRequired: true,
             validator: (newValue) {
               if (newValue == null || newValue.isEmpty) {
-                return '$label is required.';
+                return '$label ${AppLocalizations.of(context)!.isRequired}';
               }
               return null;
             },
@@ -334,8 +343,8 @@ Future<void> showEditAddressDialog(
   return showCustomDialogForm(
     context: context,
     title: addressName.isEmpty && addressLocation.isEmpty
-        ? 'Add Address'
-        : 'Edit Address',
+        ? AppLocalizations.of(context)!.addAddress
+        : AppLocalizations.of(context)!.editAddress,
     content: Form(
       key: formKey,
       child: Column(
@@ -343,14 +352,14 @@ Future<void> showEditAddressDialog(
         children: [
           CustomTextField(
             maxLength: 40,
-            label: 'Address Name',
+            label: AppLocalizations.of(context)!.addressName,
             initialValue: addressName,
             onChanged: (value) => name = value,
           ),
           const SizedBox(height: 16),
           CustomTextField(
             maxLength: 40,
-            label: 'Address Location',
+            label: AppLocalizations.of(context)!.addressLocation,
             initialValue: addressLocation,
             onChanged: (value) => location = value,
           ),

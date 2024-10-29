@@ -5,6 +5,7 @@ import 'package:product_management/presentation/user/widgets/search_input.dart';
 import 'package:product_management/presentation/user_create/user_create_page.dart';
 import 'package:product_management/provider/user_list/user_list_view_model.dart';
 import 'package:product_management/widgets/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class UserPage extends ConsumerStatefulWidget {
   const UserPage({super.key});
@@ -19,6 +20,7 @@ class _UserPageState extends ConsumerState<UserPage> {
 
   @override
   Widget build(BuildContext context) {
+    final localization = AppLocalizations.of(context)!;
     final userListViewModel = ref.watch(userListViewModelNotifierProvider);
     final userListViewModelNotifier =
         ref.read(userListViewModelNotifierProvider.notifier);
@@ -41,13 +43,12 @@ class _UserPageState extends ConsumerState<UserPage> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.grey.shade400,
-        foregroundColor: Colors.black87,
-        title: const Text(
-          'User List',
-          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        title: Text(
+          localization.userList,
+          style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(56.0),
@@ -109,7 +110,7 @@ class _UserPageState extends ConsumerState<UserPage> {
                       // Show confirmation dialog
                       final shouldDelete = await showConfirmDialog(
                         context: context,
-                        message: 'Are you sure you want to delete this user?',
+                        message: localization.confirmDelete,
                       );
                       if (shouldDelete == true) {
                         deleteUser(); // deleteUser for async handling

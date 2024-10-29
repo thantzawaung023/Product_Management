@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:product_management/data/entities/user/user.dart';
 import 'package:product_management/presentation/user_update/user_update_page.dart';
 import 'package:product_management/provider/user/user_view_model.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class UserDetailPage extends HookConsumerWidget {
   const UserDetailPage({super.key, required this.user});
@@ -13,6 +14,7 @@ class UserDetailPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final localizations = AppLocalizations.of(context)!;
     final userId = user.id;
     if (userId == null || userId.isEmpty) {
       Navigator.of(context).pop();
@@ -25,10 +27,10 @@ class UserDetailPage extends HookConsumerWidget {
     final getUser = ref.watch(getUserProvider(userId));
 
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('User Info'),
-        backgroundColor: Colors.grey.shade400,
+        title:Text(localizations.userInfo),
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         actions: [
           IconButton(
             icon: const Icon(Icons.edit),
@@ -121,8 +123,9 @@ class UserDetailPage extends HookConsumerWidget {
   }
 
   Widget _buildDetailCard(BuildContext context, User userData) {
+    final localizations = AppLocalizations.of(context)!;
     return Card(
-      color: Colors.grey[400],
+      color: Theme.of(context).primaryColor,
       elevation: 1,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
@@ -132,14 +135,14 @@ class UserDetailPage extends HookConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildDetailRow(context, 'Name:', userData.name),
-            _buildDetailRow(context, 'Email:', userData.email),
+            _buildDetailRow(context, localizations.name, userData.name),
+            _buildDetailRow(context, localizations.email, userData.email),
             _buildDetailRow(
-                context, 'Address Name:', userData.address?.name ?? 'N/A'),
-            _buildDetailRow(context, 'Address Location:',
+                context, localizations.addressName, userData.address?.name ?? 'N/A'),
+            _buildDetailRow(context, localizations.addressLocation,
                 userData.address?.location ?? 'N/A'),
             _buildDetailRow(
-                context, 'CreatedAt:', userData.createdAt.timeZoneName),
+                context, localizations.joined, userData.createdAt.timeZoneName),
           ],
         ),
       ),

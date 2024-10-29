@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:product_management/data/entities/todo/todo.dart';
 import 'package:product_management/presentation/todo_list/widgets/todo_item.dart';
+import 'package:product_management/presentation/todo_list/widgets/todo_shimmer.dart';
 import 'package:product_management/provider/todo_list/todo_list_notifier.dart';
 import 'package:product_management/widgets/common_dialog.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class CustomCarouselSlider extends ConsumerStatefulWidget {
   const CustomCarouselSlider({super.key});
@@ -26,7 +28,7 @@ class CustomCarouselSliderState extends ConsumerState<CustomCarouselSlider> {
     // Handle loading and error states
     if (todoListState.isLoading) {
       return const Center(
-        child: CircularProgressIndicator(),
+        child: ShimmerCarousel(),
       );
     }
 
@@ -39,8 +41,8 @@ class CustomCarouselSliderState extends ConsumerState<CustomCarouselSlider> {
     // Get the list of top todos (ensure it's not empty)
     final todoList = todoListState.value;
     if (todoList == null || todoList.isEmpty) {
-      return const Center(
-        child: Text('No top todos available.'),
+      return Center(
+        child: Text(AppLocalizations.of(context)!.todoNotAvailable),
       );
     }
 
@@ -116,13 +118,13 @@ class CustomCarouselSliderState extends ConsumerState<CustomCarouselSlider> {
             );
           }).toList(),
         ),
-        buildCarouselIndicator(_currentPage, todoList.length),
+        buildCarouselIndicator(_currentPage, todoList.length, context),
       ],
     );
   }
 }
 
-buildCarouselIndicator(currentPage, itemCount) {
+buildCarouselIndicator(currentPage, itemCount, context) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
@@ -133,7 +135,9 @@ buildCarouselIndicator(currentPage, itemCount) {
           height: i == currentPage ? 7 : 5,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: i == currentPage ? Colors.black : Colors.grey,
+            color: i == currentPage
+                ? Theme.of(context).colorScheme.secondary
+                : Colors.grey,
           ),
         ),
     ],
@@ -151,8 +155,7 @@ class ToDoList extends ConsumerWidget {
     final user = auth.FirebaseAuth.instance.currentUser;
 
     if (todoListState.isLoading) {
-      return const Center(
-          child: CircularProgressIndicator()); // Loading for inner component
+      return const ShimmerTodoItem(); // Loading for inner component
     }
 
     if (todoListState.errorMsg.isNotEmpty) {
@@ -160,7 +163,8 @@ class ToDoList extends ConsumerWidget {
     }
 
     if (todoListState.todoList == null || todoListState.todoList.isEmpty) {
-      return const Center(child: Text('No todos available.'));
+      return Center(
+          child: Text(AppLocalizations.of(context)!.todoNotAvailable));
     }
 
     return GridView.builder(
@@ -178,21 +182,19 @@ class ToDoList extends ConsumerWidget {
         return Ink(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            color: Colors.grey[500],
+            color: Theme.of(context).primaryColor,
           ),
           child: InkWell(
             onTap: () {},
             onLongPress: () async {
               final shouldDelete = await showConfirmDialog(
                 context: context,
-                message: 'Are you sure you want to Delete?',
+                message: AppLocalizations.of(context)!.confirmDelete,
               );
               if (shouldDelete) {
                 if (user!.email != todo.createdBy && context.mounted) {
-                  showSnackBar(
-                      context,
-                      'You Can\'t Delete Another User\'s TodoList!',
-                      Colors.red);
+                  showSnackBar(context,
+                      AppLocalizations.of(context)!.cannotDelete, Colors.red);
                   return;
                 }
 
@@ -200,12 +202,16 @@ class ToDoList extends ConsumerWidget {
                   todoListNotifier.deleteTodo(todo.id);
                   if (context.mounted) {
                     showSnackBar(
-                        context, 'TodoList deleted successfully', Colors.green);
+                        context,
+                        AppLocalizations.of(context)!.successDelete,
+                        Colors.green);
                   }
                 } on Exception catch (e) {
                   if (context.mounted) {
                     showSnackBar(
-                        context, 'Failed to delete todoList: $e', Colors.red);
+                        context,
+                        '${AppLocalizations.of(context)!.failDelete}: $e',
+                        Colors.red);
                   }
                 }
               }

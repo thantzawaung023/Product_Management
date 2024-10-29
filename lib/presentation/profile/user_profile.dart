@@ -7,11 +7,11 @@ import 'package:product_management/presentation/login/login_page.dart';
 import 'package:product_management/presentation/profile/widgets/profile_widgets.dart';
 import 'package:product_management/provider/loading/loading_provider.dart';
 import 'package:product_management/provider/user/user_view_model.dart';
-import 'package:product_management/utils/constants/messages.dart';
 import 'package:product_management/utils/extensions/exception_msg.dart';
 import 'package:product_management/utils/storage/provider_setting.dart';
 import 'package:product_management/widgets/common_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class UserProfilePage extends HookConsumerWidget {
   const UserProfilePage({super.key, required this.userId});
@@ -46,7 +46,8 @@ class UserProfilePage extends HookConsumerWidget {
       final image = await userNotifier.imageData();
 
       if (image == null && context.mounted) {
-        showSnackBar(context, Messages.validateImgMsg,Colors.red);
+        showSnackBar(
+            context, AppLocalizations.of(context)!.validateImgMsg, Colors.red);
         ref.read(loadingProvider.notifier).update((state) => false);
         return;
       }
@@ -55,11 +56,12 @@ class UserProfilePage extends HookConsumerWidget {
         userNotifier.setImageData(image!);
         await userNotifier.uploadProfile(oldProfileUrl: user.profile ?? '');
         if (context.mounted) {
-          showSnackBar(context, 'Profile image uploaded successfully!',Colors.green);
+          showSnackBar(context,
+              AppLocalizations.of(context)!.successProfileUpload, Colors.green);
         }
       } on Exception catch (e) {
         if (context.mounted) {
-          showSnackBar(context, e.getMessage,Colors.red);
+          showSnackBar(context, e.getMessage, Colors.red);
         }
       } finally {
         ref.read(loadingProvider.notifier).update((state) => false);
@@ -76,21 +78,22 @@ class UserProfilePage extends HookConsumerWidget {
         ref.watch(loadingProvider.notifier).update((state) => false);
         showOptions.value = false;
         if (context.mounted) {
-          showSnackBar(context, 'Profile image removed successfully!',Colors.green);
+          showSnackBar(context,
+              AppLocalizations.of(context)!.successProfileRemove, Colors.green);
         }
       } on Exception catch (e) {
         ref.watch(loadingProvider.notifier).update((state) => false);
         if (context.mounted) {
-          showSnackBar(context, e.getMessage,Colors.red);
+          showSnackBar(context, e.getMessage, Colors.red);
         }
       }
     }
 
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('User Profile'),
-        backgroundColor: Colors.grey.shade400,
+        title: Text(AppLocalizations.of(context)!.profile),
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         actions: const [],
       ),
       body: userAsyncValue.when(

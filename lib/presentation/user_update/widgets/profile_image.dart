@@ -3,6 +3,7 @@ import 'package:product_management/provider/user/user_state.dart';
 import 'package:product_management/provider/user/user_view_model.dart';
 import 'package:product_management/utils/utils.dart';
 import 'package:product_management/widgets/common_dialog.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class ProfileImageSection extends StatelessWidget {
   const ProfileImageSection(
@@ -27,7 +28,8 @@ class ProfileImageSection extends StatelessWidget {
             final image = await viewModel.imageData();
             if (image == null) {
               if (context.mounted) {
-                showSnackBar(context, Messages.validateImgMsg, Colors.red);
+                showSnackBar(context,
+                    AppLocalizations.of(context)!.validateImgMsg, Colors.red);
               }
             } else {
               viewModel.setImageData(image);
@@ -55,7 +57,7 @@ class ProfileImageSection extends StatelessWidget {
           height: 10,
         ),
         Text(
-          Messages.selectProfileImg,
+          AppLocalizations.of(context)!.selectImage,
           style: const TextStyle(color: Colors.grey),
         ),
       ],

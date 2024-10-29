@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:product_management/config/navigator.dart';
 import 'package:product_management/presentation/varification/verification_page.dart';
 import 'package:product_management/provider/authentication/auth_view_model.dart';
 import 'package:product_management/provider/loading/loading_provider.dart';
 import 'package:product_management/utils/utils.dart';
 import 'package:product_management/widgets/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class RegisterPage extends ConsumerStatefulWidget {
   const RegisterPage({super.key});
@@ -34,9 +34,10 @@ class RegisterPageState extends ConsumerState<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     final authViewModelNotifier = ref.read(authNotifierProvider.notifier);
+    final localization = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -57,11 +58,11 @@ class RegisterPageState extends ConsumerState<RegisterPage> {
                 // Email input
                 CustomTextField(
                   controller: _emailController, // Add controller
-                  label: 'Email',
+                  label: localization.email,
                   isRequired: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Email is required.';
+                      return localization.emailRequired;
                     }
                     return null;
                   },
@@ -72,11 +73,11 @@ class RegisterPageState extends ConsumerState<RegisterPage> {
                 // Name input
                 CustomTextField(
                   controller: _nameController, // Add controller
-                  label: 'Name',
+                  label: localization.name,
                   isRequired: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Name is required.';
+                      return localization.nameRequired;
                     }
                     return null;
                   },
@@ -88,12 +89,12 @@ class RegisterPageState extends ConsumerState<RegisterPage> {
                 // Password input
                 CustomTextField(
                   controller: _passwordController, // Add controller
-                  label: 'Password',
+                  label: localization.password,
                   isRequired: true,
                   obscured: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Password is required.';
+                      return localization.passwordRequired;
                     }
                     return null;
                   },
@@ -106,7 +107,7 @@ class RegisterPageState extends ConsumerState<RegisterPage> {
 
                 // Register button
                 CustomButton(
-                  label: 'Save',
+                  label: localization.register,
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       ref
@@ -125,7 +126,8 @@ class RegisterPageState extends ConsumerState<RegisterPage> {
                           ref
                               .watch(loadingProvider.notifier)
                               .update((state) => false);
-                          showSnackBar(context, Messages.userSaveSuccess,Colors.green);
+                          showSnackBar(context, localization.successUserCreate,
+                              Colors.green);
                           Navigator.of(context).pushAndRemoveUntil<void>(
                             MaterialPageRoute(
                               builder: (context) =>
@@ -156,7 +158,7 @@ class RegisterPageState extends ConsumerState<RegisterPage> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: const Text("Already have an account? Login"),
+                  child: Text(localization.alreadyHaveAcc),
                 ),
               ],
             ),
