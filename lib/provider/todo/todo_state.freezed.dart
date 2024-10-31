@@ -23,7 +23,7 @@ mixin _$TodoState {
   String get createdBy => throw _privateConstructorUsedError;
   String? get image => throw _privateConstructorUsedError;
   int get likesCount => throw _privateConstructorUsedError;
-  Set<String> get likedByUsers => throw _privateConstructorUsedError;
+  List<String> get likedByUsers => throw _privateConstructorUsedError;
   Uint8List? get imageData => throw _privateConstructorUsedError;
   DateTime? get createdAt => throw _privateConstructorUsedError;
   DateTime? get updatedAt => throw _privateConstructorUsedError;
@@ -48,7 +48,7 @@ abstract class $TodoStateCopyWith<$Res> {
       String createdBy,
       String? image,
       int likesCount,
-      Set<String> likedByUsers,
+      List<String> likedByUsers,
       Uint8List? imageData,
       DateTime? createdAt,
       DateTime? updatedAt});
@@ -113,7 +113,7 @@ class _$TodoStateCopyWithImpl<$Res, $Val extends TodoState>
       likedByUsers: null == likedByUsers
           ? _value.likedByUsers
           : likedByUsers // ignore: cast_nullable_to_non_nullable
-              as Set<String>,
+              as List<String>,
       imageData: freezed == imageData
           ? _value.imageData
           : imageData // ignore: cast_nullable_to_non_nullable
@@ -146,7 +146,7 @@ abstract class _$$TodoStateImplCopyWith<$Res>
       String createdBy,
       String? image,
       int likesCount,
-      Set<String> likedByUsers,
+      List<String> likedByUsers,
       Uint8List? imageData,
       DateTime? createdAt,
       DateTime? updatedAt});
@@ -209,7 +209,7 @@ class __$$TodoStateImplCopyWithImpl<$Res>
       likedByUsers: null == likedByUsers
           ? _value._likedByUsers
           : likedByUsers // ignore: cast_nullable_to_non_nullable
-              as Set<String>,
+              as List<String>,
       imageData: freezed == imageData
           ? _value.imageData
           : imageData // ignore: cast_nullable_to_non_nullable
@@ -237,7 +237,7 @@ class _$TodoStateImpl implements _TodoState {
       this.createdBy = '',
       this.image = '',
       this.likesCount = 0,
-      final Set<String> likedByUsers = const {},
+      final List<String> likedByUsers = const [],
       this.imageData,
       this.createdAt,
       this.updatedAt})
@@ -264,13 +264,13 @@ class _$TodoStateImpl implements _TodoState {
   @override
   @JsonKey()
   final int likesCount;
-  final Set<String> _likedByUsers;
+  final List<String> _likedByUsers;
   @override
   @JsonKey()
-  Set<String> get likedByUsers {
-    if (_likedByUsers is EqualUnmodifiableSetView) return _likedByUsers;
+  List<String> get likedByUsers {
+    if (_likedByUsers is EqualUnmodifiableListView) return _likedByUsers;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableSetView(_likedByUsers);
+    return EqualUnmodifiableListView(_likedByUsers);
   }
 
   @override
@@ -343,7 +343,7 @@ abstract class _TodoState implements TodoState {
       final String createdBy,
       final String? image,
       final int likesCount,
-      final Set<String> likedByUsers,
+      final List<String> likedByUsers,
       final Uint8List? imageData,
       final DateTime? createdAt,
       final DateTime? updatedAt}) = _$TodoStateImpl;
@@ -363,7 +363,7 @@ abstract class _TodoState implements TodoState {
   @override
   int get likesCount;
   @override
-  Set<String> get likedByUsers;
+  List<String> get likedByUsers;
   @override
   Uint8List? get imageData;
   @override

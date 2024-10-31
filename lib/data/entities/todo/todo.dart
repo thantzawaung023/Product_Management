@@ -15,7 +15,7 @@ class Todo with _$Todo {
     required String? image,
     required String createdBy,
     required int likesCount,
-    required Set<String> likedByUsers,
+    required List<String> likedByUsers,
     @TimestampConverter() required DateTime createdAt,
     @TimestampConverter() required DateTime updatedAt,
   }) = _Todo;

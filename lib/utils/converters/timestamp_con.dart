@@ -21,3 +21,4 @@ class TimestampConverter implements JsonConverter<DateTime, Timestamp> {
   @override
   Timestamp toJson(DateTime json) => Timestamp.fromDate(json);
 }
+

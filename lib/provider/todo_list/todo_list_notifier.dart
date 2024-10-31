@@ -2,11 +2,22 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:product_management/config/config.dart';
 import 'package:product_management/data/entities/todo/todo.dart';
 import 'package:product_management/provider/todo_list/todo_list_state.dart';
+import 'package:product_management/provider/todo_list/todowithlikes_state.dart';
 import 'package:product_management/repository/todo_repo.dart';
 
 final getTopTodoProvider = StreamProvider<List<Todo?>>((ref) {
   final todoRepository = ref.watch(todoRepositoryProvider);
   return todoRepository.getTopTodo();
+});
+
+final getMyTodoProvider = StreamProvider<List<Todo?>>((ref) {
+  final todoRepository = ref.watch(todoRepositoryProvider);
+  return todoRepository.getMyTodoList();
+});
+
+final getRecentLikesProvider = StreamProvider<List<Todo?>>((ref) {
+  final todoRepository = ref.watch(todoRepositoryProvider);
+  return todoRepository.getRecentLikePostList();
 });
 
 final todoListNotifierProvider =

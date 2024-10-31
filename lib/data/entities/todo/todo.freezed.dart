@@ -27,7 +27,7 @@ mixin _$Todo {
   String? get image => throw _privateConstructorUsedError;
   String get createdBy => throw _privateConstructorUsedError;
   int get likesCount => throw _privateConstructorUsedError;
-  Set<String> get likedByUsers => throw _privateConstructorUsedError;
+  List<String> get likedByUsers => throw _privateConstructorUsedError;
   @TimestampConverter()
   DateTime get createdAt => throw _privateConstructorUsedError;
   @TimestampConverter()
@@ -55,7 +55,7 @@ abstract class $TodoCopyWith<$Res> {
       String? image,
       String createdBy,
       int likesCount,
-      Set<String> likedByUsers,
+      List<String> likedByUsers,
       @TimestampConverter() DateTime createdAt,
       @TimestampConverter() DateTime updatedAt});
 }
@@ -118,7 +118,7 @@ class _$TodoCopyWithImpl<$Res, $Val extends Todo>
       likedByUsers: null == likedByUsers
           ? _value.likedByUsers
           : likedByUsers // ignore: cast_nullable_to_non_nullable
-              as Set<String>,
+              as List<String>,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -146,7 +146,7 @@ abstract class _$$TodoImplCopyWith<$Res> implements $TodoCopyWith<$Res> {
       String? image,
       String createdBy,
       int likesCount,
-      Set<String> likedByUsers,
+      List<String> likedByUsers,
       @TimestampConverter() DateTime createdAt,
       @TimestampConverter() DateTime updatedAt});
 }
@@ -206,7 +206,7 @@ class __$$TodoImplCopyWithImpl<$Res>
       likedByUsers: null == likedByUsers
           ? _value._likedByUsers
           : likedByUsers // ignore: cast_nullable_to_non_nullable
-              as Set<String>,
+              as List<String>,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -230,7 +230,7 @@ class _$TodoImpl implements _Todo {
       required this.image,
       required this.createdBy,
       required this.likesCount,
-      required final Set<String> likedByUsers,
+      required final List<String> likedByUsers,
       @TimestampConverter() required this.createdAt,
       @TimestampConverter() required this.updatedAt})
       : _likedByUsers = likedByUsers;
@@ -252,12 +252,12 @@ class _$TodoImpl implements _Todo {
   final String createdBy;
   @override
   final int likesCount;
-  final Set<String> _likedByUsers;
+  final List<String> _likedByUsers;
   @override
-  Set<String> get likedByUsers {
-    if (_likedByUsers is EqualUnmodifiableSetView) return _likedByUsers;
+  List<String> get likedByUsers {
+    if (_likedByUsers is EqualUnmodifiableListView) return _likedByUsers;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableSetView(_likedByUsers);
+    return EqualUnmodifiableListView(_likedByUsers);
   }
 
   @override
@@ -336,7 +336,7 @@ abstract class _Todo implements Todo {
       required final String? image,
       required final String createdBy,
       required final int likesCount,
-      required final Set<String> likedByUsers,
+      required final List<String> likedByUsers,
       @TimestampConverter() required final DateTime createdAt,
       @TimestampConverter() required final DateTime updatedAt}) = _$TodoImpl;
 
@@ -357,7 +357,7 @@ abstract class _Todo implements Todo {
   @override
   int get likesCount;
   @override
-  Set<String> get likedByUsers;
+  List<String> get likedByUsers;
   @override
   @TimestampConverter()
   DateTime get createdAt;

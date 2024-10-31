@@ -14,7 +14,7 @@ class TodoState with _$TodoState {
     @Default('') String createdBy,
     @Default('') String? image,
     @Default(0) int likesCount,
-    @Default({}) Set<String> likedByUsers,
+    @Default([]) List<String> likedByUsers,
     Uint8List? imageData,
     DateTime? createdAt,
     DateTime? updatedAt,

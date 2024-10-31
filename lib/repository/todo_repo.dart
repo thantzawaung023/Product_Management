@@ -17,6 +17,8 @@ abstract class BaseTodoRepository {
   Future<void> updateTodo(Todo todo);
   Future<void> updateLikes(id, newLikesCount, likedByUsers);
   Stream<List<Todo?>> getTopTodo();
+  Stream<List<Todo?>> getMyTodoList();
+  Stream<List<Todo?>> getRecentLikePostList();
   Future<void> deleteFromStorage(String url);
 }
 
@@ -138,12 +140,59 @@ class TodoRepositoryImpl implements BaseTodoRepository {
   }
 
   @override
+  Stream<List<Todo?>> getMyTodoList() {
+    try {
+      final user = auth.FirebaseAuth.instance.currentUser;
+      final snapshotData = _dbTodo // Use your collection name
+          .where('createdBy',
+              isEqualTo: user!.email) // Filter where isPublish is true
+          .orderBy('createdAt',
+              descending: true) // Order by likesCount descending
+          .limit(5) // Limit the result to 5
+          .snapshots();
+
+      return snapshotData.map((snapshot) {
+        return snapshot.docs.map((doc) {
+          final data = doc.data();
+          return Todo.fromJson(data);
+        }).toList();
+      });
+    } on Exception catch (e) {
+      logger.e('Error get My Todo List: $e');
+      return Stream.error('$e');
+    }
+  }
+
+  @override
   Future<void> deleteFromStorage(String url) async {
     try {
       await _storage.refFromURL(url).delete();
     } on Exception catch (e) {
       logger.e('Error delete todo image: $e');
       throw Exception('Failed to delete todo image: $e');
+    }
+  }
+
+  @override
+  Stream<List<Todo?>> getRecentLikePostList() {
+    try {
+      final user = auth.FirebaseAuth.instance.currentUser;
+      final snapshotData = _dbTodo // Use your collection name
+          .where('likedByUsers', arrayContains: user!.uid)
+          .orderBy('createdAt',
+              descending: true) // Order by likesCount descending
+          .limit(10) // Limit the result to 5
+          .snapshots();
+
+      return snapshotData.map((snapshot) {
+        return snapshot.docs.map((doc) {
+          final data = doc.data();
+          return Todo.fromJson(data);
+        }).toList();
+      });
+    } on Exception catch (e) {
+      logger.e('Error get My Todo List: $e');
+      return Stream.error('$e');
     }
   }
 }

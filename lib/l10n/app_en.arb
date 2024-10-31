@@ -89,7 +89,11 @@
     "verifyCheckLable": "Please check your inbox.",
     "verifyHasBeenReSend" : "Verification Email has been sent again.",
     "verifyReSend" : "Resend Verification Email",
-    "register":"Register"
+    "register":"Register",
+    "dashboard":"Dashboard",
+    "todayIs":"Today is",
+    "myTodoPost":"My Todo Post",
+    "recentLikes":"Recent Likes"
 
 
 }
