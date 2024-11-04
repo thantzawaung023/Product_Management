@@ -15,13 +15,15 @@ import 'package:flutter_gen/gen_l10n/app_localization.dart';
 class MyApp extends HookConsumerWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authUserStream = ref.watch(authUserStreamProvider);
     final authStateNotifier = ref.watch(authNotifierProvider.notifier);
     final selectedLocale = ref.watch(languageProvider);
     final themeMode = ref.watch(themeProvider);
+
+    // Add a loading state to track the async call status
+    final isUserDataLoaded = useState(false);
 
     return MaterialApp(
       title: Messages.titleMsg,
@@ -40,22 +42,30 @@ class MyApp extends HookConsumerWidget {
       home: authUserStream.when(
         data: (user) {
           if (user != null && user.emailVerified) {
+            // Using useEffect to fetch user data asynchronously
             useEffect(() {
-              authStateNotifier.getUserFuture(authUserId: user.uid);
+              // Define an async function inside the effect
+              Future<void> fetchUserData() async {
+                await authStateNotifier.getUserFuture(authUserId: user.uid);
+                isUserDataLoaded.value = true; // Update loading state when done
+              }
+
+              // Call fetchUserData and don't await to keep it non-blocking
+              fetchUserData();
               return null;
-            }, [user]);
-            return AppNavigator(
-              userId: user.uid,
-            );
+            }, [user]); // Re-run if the user changes
+
+            // Render AppNavigator only when user data is loaded
+            return isUserDataLoaded.value
+                ? AppNavigator(userId: user.uid)
+                : const Center(child: CircularProgressIndicator());
           } else {
             return const LoginPage();
           }
         },
-        loading: () => const Center(
-          child: CircularProgressIndicator(),
-        ),
+        loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) =>
-            const Center(child: Text('Something is Wrong!')),
+            const Center(child: Text('Something went wrong!')),
       ),
     );
   }

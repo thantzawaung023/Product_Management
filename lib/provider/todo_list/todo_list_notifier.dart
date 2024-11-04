@@ -70,6 +70,19 @@ class TodosNotifier extends StateNotifier<TodoListState> {
     }
   }
 
+  Future<void> deleteTodoByUser(String email) async {
+    try {
+      state = state.copyWith(isLoading: true);
+      await _todoRepository.deleteTodoListByUser(email);
+      state = state.copyWith(isLoading: false);
+    } on Exception catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+      );
+      rethrow;
+    }
+  }
+
   Future<void> deleteTodo(String id) async {
     try {
       state = state.copyWith(isLoading: true);

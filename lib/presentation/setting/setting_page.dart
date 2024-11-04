@@ -10,6 +10,8 @@ import 'package:product_management/presentation/setting/widgets/language_dropdwo
 import 'package:product_management/provider/Them/them_provider.dart';
 import 'package:product_management/provider/authentication/auth_view_model.dart';
 import 'package:product_management/provider/loading/loading_provider.dart';
+import 'package:product_management/provider/todo/todo_notifier.dart';
+import 'package:product_management/provider/todo_list/todo_list_notifier.dart';
 import 'package:product_management/provider/user/user_view_model.dart';
 import 'package:product_management/utils/extensions/exception_msg.dart';
 import 'package:product_management/utils/storage/provider_setting.dart';
@@ -45,6 +47,7 @@ class SettingPage extends HookConsumerWidget {
 
     Future<void> accountDelete(User user) async {
       final authStateNotifier = ref.watch(authNotifierProvider.notifier);
+      final todoListStateNotifier = ref.watch(todoListNotifierProvider.notifier);
       await accountDeleteConfirmationDialog(
         context: context,
         title: AppLocalizations.of(context)!.deleteAccount,
@@ -55,6 +58,8 @@ class SettingPage extends HookConsumerWidget {
           try {
             ref.watch(loadingProvider.notifier).update((state) => true);
 
+            // Perform Todo Post Deletion
+            await todoListStateNotifier.deleteTodoByUser(user.email);
             // Perform account deletion
             await authStateNotifier.deleteAccount(
                 password: passwordInputController.text,

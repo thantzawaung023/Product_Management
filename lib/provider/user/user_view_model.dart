@@ -19,7 +19,13 @@ final getUserProvider = StreamProvider.autoDispose.family<User, String>(
 );
 
 final userProviderFuture = FutureProvider.autoDispose.family<User?, String>(
-  (ref, id) => ref.watch(userRepositoryProvider).getUserFuture(userId: id),
+  (ref, id) async {
+    final user = await ref.watch(userRepositoryProvider).getUserFuture(userId: id);
+    if (user == null) {
+      throw Exception("User with ID $id not found.");
+    }
+    return user;
+  },
 );
 
 // State Notifier Provider
