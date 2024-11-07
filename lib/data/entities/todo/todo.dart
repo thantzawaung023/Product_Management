@@ -16,6 +16,9 @@ class Todo with _$Todo {
     required String createdBy,
     required int likesCount,
     required List<String> likedByUsers,
+    required String? latitude,
+    required String? longitude,
+    required String? location,
     @TimestampConverter() required DateTime createdAt,
     @TimestampConverter() required DateTime updatedAt,
   }) = _Todo;

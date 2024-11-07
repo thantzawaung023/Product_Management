@@ -93,7 +93,9 @@
     "dashboard":"Dashboard",
     "todayIs":"Today is",
     "myTodoPost":"My Todo Post",
-    "recentLikes":"Recent Likes"
+    "recentLikes":"Recent Likes",
+    "chooseFromGoogeMap":"Choose From Google Map",
+    "selectYourLocation":"Select Your Location"
 
 
 }

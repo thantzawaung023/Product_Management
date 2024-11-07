@@ -24,6 +24,9 @@ mixin _$TodoState {
   String? get image => throw _privateConstructorUsedError;
   int get likesCount => throw _privateConstructorUsedError;
   List<String> get likedByUsers => throw _privateConstructorUsedError;
+  String? get latitude => throw _privateConstructorUsedError;
+  String? get longitude => throw _privateConstructorUsedError;
+  String? get location => throw _privateConstructorUsedError;
   Uint8List? get imageData => throw _privateConstructorUsedError;
   DateTime? get createdAt => throw _privateConstructorUsedError;
   DateTime? get updatedAt => throw _privateConstructorUsedError;
@@ -49,6 +52,9 @@ abstract class $TodoStateCopyWith<$Res> {
       String? image,
       int likesCount,
       List<String> likedByUsers,
+      String? latitude,
+      String? longitude,
+      String? location,
       Uint8List? imageData,
       DateTime? createdAt,
       DateTime? updatedAt});
@@ -77,6 +83,9 @@ class _$TodoStateCopyWithImpl<$Res, $Val extends TodoState>
     Object? image = freezed,
     Object? likesCount = null,
     Object? likedByUsers = null,
+    Object? latitude = freezed,
+    Object? longitude = freezed,
+    Object? location = freezed,
     Object? imageData = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
@@ -114,6 +123,18 @@ class _$TodoStateCopyWithImpl<$Res, $Val extends TodoState>
           ? _value.likedByUsers
           : likedByUsers // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      latitude: freezed == latitude
+          ? _value.latitude
+          : latitude // ignore: cast_nullable_to_non_nullable
+              as String?,
+      longitude: freezed == longitude
+          ? _value.longitude
+          : longitude // ignore: cast_nullable_to_non_nullable
+              as String?,
+      location: freezed == location
+          ? _value.location
+          : location // ignore: cast_nullable_to_non_nullable
+              as String?,
       imageData: freezed == imageData
           ? _value.imageData
           : imageData // ignore: cast_nullable_to_non_nullable
@@ -147,6 +168,9 @@ abstract class _$$TodoStateImplCopyWith<$Res>
       String? image,
       int likesCount,
       List<String> likedByUsers,
+      String? latitude,
+      String? longitude,
+      String? location,
       Uint8List? imageData,
       DateTime? createdAt,
       DateTime? updatedAt});
@@ -173,6 +197,9 @@ class __$$TodoStateImplCopyWithImpl<$Res>
     Object? image = freezed,
     Object? likesCount = null,
     Object? likedByUsers = null,
+    Object? latitude = freezed,
+    Object? longitude = freezed,
+    Object? location = freezed,
     Object? imageData = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
@@ -210,6 +237,18 @@ class __$$TodoStateImplCopyWithImpl<$Res>
           ? _value._likedByUsers
           : likedByUsers // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      latitude: freezed == latitude
+          ? _value.latitude
+          : latitude // ignore: cast_nullable_to_non_nullable
+              as String?,
+      longitude: freezed == longitude
+          ? _value.longitude
+          : longitude // ignore: cast_nullable_to_non_nullable
+              as String?,
+      location: freezed == location
+          ? _value.location
+          : location // ignore: cast_nullable_to_non_nullable
+              as String?,
       imageData: freezed == imageData
           ? _value.imageData
           : imageData // ignore: cast_nullable_to_non_nullable
@@ -238,6 +277,9 @@ class _$TodoStateImpl implements _TodoState {
       this.image = '',
       this.likesCount = 0,
       final List<String> likedByUsers = const [],
+      this.latitude = '',
+      this.longitude = '',
+      this.location = '',
       this.imageData,
       this.createdAt,
       this.updatedAt})
@@ -274,6 +316,15 @@ class _$TodoStateImpl implements _TodoState {
   }
 
   @override
+  @JsonKey()
+  final String? latitude;
+  @override
+  @JsonKey()
+  final String? longitude;
+  @override
+  @JsonKey()
+  final String? location;
+  @override
   final Uint8List? imageData;
   @override
   final DateTime? createdAt;
@@ -282,7 +333,7 @@ class _$TodoStateImpl implements _TodoState {
 
   @override
   String toString() {
-    return 'TodoState(id: $id, title: $title, description: $description, isPublish: $isPublish, createdBy: $createdBy, image: $image, likesCount: $likesCount, likedByUsers: $likedByUsers, imageData: $imageData, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'TodoState(id: $id, title: $title, description: $description, isPublish: $isPublish, createdBy: $createdBy, image: $image, likesCount: $likesCount, likedByUsers: $likedByUsers, latitude: $latitude, longitude: $longitude, location: $location, imageData: $imageData, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -303,6 +354,12 @@ class _$TodoStateImpl implements _TodoState {
                 other.likesCount == likesCount) &&
             const DeepCollectionEquality()
                 .equals(other._likedByUsers, _likedByUsers) &&
+            (identical(other.latitude, latitude) ||
+                other.latitude == latitude) &&
+            (identical(other.longitude, longitude) ||
+                other.longitude == longitude) &&
+            (identical(other.location, location) ||
+                other.location == location) &&
             const DeepCollectionEquality().equals(other.imageData, imageData) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
@@ -321,6 +378,9 @@ class _$TodoStateImpl implements _TodoState {
       image,
       likesCount,
       const DeepCollectionEquality().hash(_likedByUsers),
+      latitude,
+      longitude,
+      location,
       const DeepCollectionEquality().hash(imageData),
       createdAt,
       updatedAt);
@@ -344,6 +404,9 @@ abstract class _TodoState implements TodoState {
       final String? image,
       final int likesCount,
       final List<String> likedByUsers,
+      final String? latitude,
+      final String? longitude,
+      final String? location,
       final Uint8List? imageData,
       final DateTime? createdAt,
       final DateTime? updatedAt}) = _$TodoStateImpl;
@@ -364,6 +427,12 @@ abstract class _TodoState implements TodoState {
   int get likesCount;
   @override
   List<String> get likedByUsers;
+  @override
+  String? get latitude;
+  @override
+  String? get longitude;
+  @override
+  String? get location;
   @override
   Uint8List? get imageData;
   @override

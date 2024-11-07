@@ -93,5 +93,7 @@
      "dashboard":"Dashboard",
     "todayIs":"ဒီနေ့က",
     "myTodoPost":"ကျွန်ုပ်၏ပိုစ့်များ",
-    "recentLikes":"ကျွန်ုပ်လိုက်စ်လုပ်ထားသောပိုစ့်များ"
+    "recentLikes":"ကျွန်ုပ်လိုက်စ်လုပ်ထားသောပိုစ့်များ",
+    "chooseFromGoogeMap":"မြေပုံမှ‌ရွေးရန်",
+    "selectYourLocation":"သင့်ရဲ့လက်ရှိတည်နေရာ"
 }

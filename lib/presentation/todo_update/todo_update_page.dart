@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:product_management/data/entities/todo/todo.dart';
+import 'package:product_management/presentation/todo_add/widgets/location_picker_dialog.dart';
 import 'package:product_management/presentation/todo_add/widgets/todo_image.dart';
 import 'package:product_management/provider/loading/loading_provider.dart';
 import 'package:product_management/provider/todo/todo_notifier.dart';
@@ -14,6 +16,7 @@ class TodoUpdatePage extends ConsumerWidget {
 
   final _formKey = GlobalKey<FormState>();
   final Todo todo;
+  String? selectedLocation;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -98,8 +101,67 @@ class TodoUpdatePage extends ConsumerWidget {
                     customSwitch(todoNotifier, todoState),
                   ],
                 ),
+
                 const SizedBox(
-                  height: 40,
+                  height: 25,
+                ),
+
+                // Google Maps Location Picker Section
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: () async {
+                          final location = await showDialog<LatLng>(
+                            context: context,
+                            builder: (context) => const LocationPickerDialog(),
+                          );
+
+                          if (location != null) {
+                            todoNotifier
+                                .setLatitude(location.latitude.toString());
+                            todoNotifier
+                                .setLongitude(location.longitude.toString());
+                            selectedLocation = await todoNotifier
+                                .getAddressFromLatLng(location);
+                            todoNotifier.setLocation(selectedLocation!);
+                          }
+                        },
+                        label: todoState.location == null ||
+                                todoState.location == ''
+                            ? Text(
+                                AppLocalizations.of(context)!
+                                    .selectYourLocation,
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSecondary),
+                              )
+                            : Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Your location - ${todoState.location}',
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSecondary),
+                                ),
+                              ),
+                        icon: Icon(
+                          Icons.location_on_outlined,
+                          size: 30,
+                          color: Theme.of(context).colorScheme.onSecondary,
+                        ),
+                        style: const ButtonStyle(
+                            backgroundColor: WidgetStateColor.transparent),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(
+                  height: 30,
                 ),
                 CustomButton(
                   label: isLoading ? '' : AppLocalizations.of(context)!.update,

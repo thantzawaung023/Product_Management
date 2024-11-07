@@ -17,6 +17,9 @@ _$TodoImpl _$$TodoImplFromJson(Map<String, dynamic> json) => _$TodoImpl(
       likedByUsers: (json['likedByUsers'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
+      latitude: json['latitude'] as String?,
+      longitude: json['longitude'] as String?,
+      location: json['location'] as String?,
       createdAt:
           const TimestampConverter().fromJson(json['createdAt'] as Timestamp),
       updatedAt:
@@ -33,6 +36,9 @@ Map<String, dynamic> _$$TodoImplToJson(_$TodoImpl instance) =>
       'createdBy': instance.createdBy,
       'likesCount': instance.likesCount,
       'likedByUsers': instance.likedByUsers,
+      'latitude': instance.latitude,
+      'longitude': instance.longitude,
+      'location': instance.location,
       'createdAt': const TimestampConverter().toJson(instance.createdAt),
       'updatedAt': const TimestampConverter().toJson(instance.updatedAt),
     };

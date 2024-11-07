@@ -39,10 +39,8 @@ class UserProfilePage extends HookConsumerWidget {
       showOptions.value = !showOptions.value;
     }
 
-    Future<void> uploadProfile(User user) async {
+    Future<void> uploadProfile(User user, UserViewModel userNotifier) async {
       ref.watch(loadingProvider.notifier).update((state) => true);
-      final userNotifier =
-          ref.watch(userViewModelNotifierProvider(user).notifier);
       final image = await userNotifier.imageData();
 
       if (image == null && context.mounted) {
@@ -69,10 +67,8 @@ class UserProfilePage extends HookConsumerWidget {
       }
     }
 
-    Future<void> removeImage(User user) async {
+    Future<void> removeImage(User user, UserViewModel userNotifier) async {
       ref.watch(loadingProvider.notifier).update((state) => true);
-      final userNotifier =
-          ref.watch(userViewModelNotifierProvider(user).notifier);
       try {
         await userNotifier.deleteProfile();
         ref.watch(loadingProvider.notifier).update((state) => false);
@@ -98,6 +94,8 @@ class UserProfilePage extends HookConsumerWidget {
       ),
       body: userAsyncValue.when(
         data: (user) {
+          final userNotifier =
+              ref.watch(userViewModelNotifierProvider(user).notifier);
           if (user == null || currentUser == null) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               ref.watch(loadingProvider.notifier).update((state) => false);
@@ -134,11 +132,14 @@ class UserProfilePage extends HookConsumerWidget {
                   userProvider: userProvider,
                   showOptions: showOptions.value,
                   onEditPressed: toggleOptions,
-                  onUploadPressed: () => uploadProfile(user),
-                  onRemovePressed: () => removeImage(user),
+                  onUploadPressed: () => uploadProfile(user, userNotifier),
+                  onRemovePressed: () => removeImage(user, userNotifier),
                 ),
                 const SizedBox(height: 20),
-                BuildDetailCard(userData: user, userProvider: userProvider),
+                BuildDetailCard(
+                    userData: user,
+                    userProvider: userProvider,
+                    userNotifier: userNotifier),
               ],
             ),
           );

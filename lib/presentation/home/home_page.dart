@@ -40,16 +40,7 @@ class HomePage extends ConsumerWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          InkWell(
-                            onTap: () {},
-                            child: Icon(
-                              Icons.sort,
-                              size: 40,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .primaryContainer,
-                            ),
-                          ),
+                          const Spacer(),
                           InkWell(
                             onTap: () {
                               Navigator.of(context).pushAndRemoveUntil<void>(

@@ -11,7 +11,7 @@ class AppNavigator extends ConsumerStatefulWidget {
   const AppNavigator({super.key, required this.userId, this.index = 0});
 
   final String userId;
-  final int index; // No need for a default value assignment here
+  final int index;
 
   @override
   AppNavigatorState createState() => AppNavigatorState();
@@ -20,8 +20,9 @@ class AppNavigator extends ConsumerStatefulWidget {
 class AppNavigatorState extends ConsumerState<AppNavigator> {
   int _selectedIndex = 0;
   late final PageController _pageController;
+  final GlobalKey<ScaffoldState> _scaffoldKey =
+      GlobalKey<ScaffoldState>(); // Create GlobalKey
 
-  // List of pages to show based on the selected index
   List<Widget>? _pages;
 
   @override
@@ -33,12 +34,10 @@ class AppNavigatorState extends ConsumerState<AppNavigator> {
 
   @override
   Widget build(BuildContext context) {
-    // Fetch the user asynchronously
     final userAsyncValue = ref.watch(userProviderFuture(widget.userId));
 
     return userAsyncValue.when(
       data: (user) {
-        // Initialize the pages when data is available
         _pages ??= <Widget>[
           HomePage(user: user!),
           const UserPage(),
@@ -48,14 +47,60 @@ class AppNavigatorState extends ConsumerState<AppNavigator> {
         ];
 
         return Scaffold(
-          body: PageView(
-            controller: _pageController,
-            onPageChanged: (index) {
-              setState(() {
-                _selectedIndex = index; // Update selected index when swiping
-              });
-            },
-            children: _pages!,
+          key: _scaffoldKey, // Attach GlobalKey to Scaffold
+          drawer: _selectedIndex == 0 || _selectedIndex == 1
+              ? Drawer(
+                  child: ListView(
+                    padding: EdgeInsets.zero,
+                    children: [
+                      const DrawerHeader(
+                        decoration: BoxDecoration(
+                          color: Colors.indigo,
+                        ),
+                        child: Text('Drawer Header'),
+                      ),
+                      ListTile(
+                        title: const Text('Item 1'),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      ListTile(
+                        title: const Text('Item 2'),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  ),
+                )
+              : null, // Only show drawer on specified pages
+          body: Stack(
+            children: [
+              PageView(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    _selectedIndex = index;
+                  });
+                },
+                children: _pages!,
+              ),
+              // Add a floating drawer button only on pages where drawer is allowed
+              if (_selectedIndex == 0)
+                Positioned(
+                  top: 60,
+                  left: 10,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.sort,
+                      size: 40,
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                    ),
+                    onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+                  ),
+                ),
+            ],
           ),
           floatingActionButton: FloatingActionButton(
             backgroundColor:
@@ -93,10 +138,8 @@ class AppNavigatorState extends ConsumerState<AppNavigator> {
           ),
         );
       },
-      loading: () =>
-          const Center(child: CircularProgressIndicator()), // Loading indicator
-      error: (error, stack) =>
-          Center(child: Text('Error: $error')), // Error handling
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(child: Text('Error: $error')),
     );
   }
 
@@ -104,7 +147,7 @@ class AppNavigatorState extends ConsumerState<AppNavigator> {
     setState(() {
       _selectedIndex = index;
     });
-    _pageController.jumpToPage(index); // Navigate to the selected page
+    _pageController.jumpToPage(index);
   }
 
   Widget _buildBottomNavItem(IconData icon, String label, int index) {

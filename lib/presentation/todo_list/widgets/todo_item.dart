@@ -23,7 +23,6 @@ class TodoItem extends ConsumerStatefulWidget {
 class TodoItemState extends ConsumerState<TodoItem> {
   @override
   Widget build(BuildContext context) {
-
     final todoNotifier = ref.watch(todoNotifierProvider(widget.todo).notifier);
     final user = auth.FirebaseAuth.instance.currentUser;
     return Column(
@@ -82,6 +81,7 @@ class TodoItemState extends ConsumerState<TodoItem> {
                         ),
                 ],
               ),
+
               const Divider(
                 thickness: 1,
                 color: Colors.black45,
@@ -139,6 +139,27 @@ class TodoItemState extends ConsumerState<TodoItem> {
                   ),
                 ],
               ),
+              if (widget.todo.location != null)
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.location_on_outlined,
+                      color: Colors.black45,
+                      size: 24,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        widget.todo.location!, // Display the actual todo title
+                        style: const TextStyle(
+                          fontSize: 11,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis, // Prevent overflow
+                      ),
+                    ),
+                  ],
+                ),
             ],
           ),
         ),

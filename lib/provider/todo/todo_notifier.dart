@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
@@ -7,6 +8,7 @@ import 'package:product_management/data/entities/todo/todo.dart';
 import 'package:product_management/provider/todo/todo_state.dart';
 import 'package:product_management/repository/todo_repo.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:geocoding/geocoding.dart';
 
 final todoNotifierProvider = StateNotifierProvider.autoDispose
     .family<TodoNotifier, TodoState, Todo?>((ref, todo) {
@@ -24,6 +26,9 @@ class TodoNotifier extends StateNotifier<TodoState> {
           isPublish: todo?.isPublish ?? true,
           createdAt: todo?.createdAt,
           updatedAt: todo?.updatedAt,
+          location: todo?.location,
+          latitude: todo?.latitude,
+          longitude: todo?.longitude,
         ));
 
   final BaseTodoRepository _todoRepository;
@@ -47,6 +52,18 @@ class TodoNotifier extends StateNotifier<TodoState> {
 
   void setImageData(Uint8List data) {
     state = state.copyWith(imageData: data);
+  }
+
+  void setLatitude(String latitude) {
+    state = state.copyWith(latitude: latitude);
+  }
+
+  void setLongitude(String longitude) {
+    state = state.copyWith(longitude: longitude);
+  }
+
+  void setLocation(String location) {
+    state = state.copyWith(location: location);
   }
 
   Future<Uint8List?> imageData() async {
@@ -98,6 +115,9 @@ class TodoNotifier extends StateNotifier<TodoState> {
         createdBy: user?.email ?? 'Unknown',
         updatedAt: DateTime.now(),
         createdAt: DateTime.now(),
+        latitude: state.latitude ?? '',
+        longitude: state.longitude ?? '',
+        location: state.location ?? '',
       );
       await _todoRepository.createToDoPost(todo);
     } on Exception catch (e) {
@@ -129,6 +149,9 @@ class TodoNotifier extends StateNotifier<TodoState> {
         createdBy: user?.email ?? 'Unknown',
         updatedAt: DateTime.now(),
         createdAt: state.createdAt ?? DateTime.now(),
+        latitude: state.latitude ?? '',
+        longitude: state.longitude ?? '',
+        location: state.location ?? '',
       );
       await _todoRepository.updateTodo(todo);
     } on Exception catch (e) {
@@ -145,5 +168,43 @@ class TodoNotifier extends StateNotifier<TodoState> {
       logger.e('Error during TodoPost Like : $e');
       rethrow;
     }
+  }
+
+  Future<String?> getAddressFromLatLng(LatLng location) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        location.latitude,
+        location.longitude,
+      );
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks[0];
+        String address =
+            (place.thoroughfare != null && place.thoroughfare != '')
+                ? '${place.name}, ${place.thoroughfare}'
+                : '${place.name}';
+        address +=
+            (place.subLocality != null && place.subLocality != '') != null
+                ? ', ${place.subLocality}'
+                : '';
+        address += (place.street != null && place.street != '')
+            ? ', ${place.street}'
+            : '';
+        address += (place.locality != null && place.locality != '')
+            ? ', ${place.locality}'
+            : '';
+        address +=
+            (place.administrativeArea != null && place.administrativeArea != '')
+                ? ', ${place.administrativeArea}'
+                : '';
+        address += (place.country != null && place.country != '')
+            ? ', ${place.country}'
+            : '';
+
+        return address;
+      }
+    } catch (e) {
+      logger.e("Error during reverse geocoding: $e");
+    }
+    return null;
   }
 }

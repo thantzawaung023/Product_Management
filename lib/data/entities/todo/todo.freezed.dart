@@ -28,6 +28,9 @@ mixin _$Todo {
   String get createdBy => throw _privateConstructorUsedError;
   int get likesCount => throw _privateConstructorUsedError;
   List<String> get likedByUsers => throw _privateConstructorUsedError;
+  String? get latitude => throw _privateConstructorUsedError;
+  String? get longitude => throw _privateConstructorUsedError;
+  String? get location => throw _privateConstructorUsedError;
   @TimestampConverter()
   DateTime get createdAt => throw _privateConstructorUsedError;
   @TimestampConverter()
@@ -56,6 +59,9 @@ abstract class $TodoCopyWith<$Res> {
       String createdBy,
       int likesCount,
       List<String> likedByUsers,
+      String? latitude,
+      String? longitude,
+      String? location,
       @TimestampConverter() DateTime createdAt,
       @TimestampConverter() DateTime updatedAt});
 }
@@ -83,6 +89,9 @@ class _$TodoCopyWithImpl<$Res, $Val extends Todo>
     Object? createdBy = null,
     Object? likesCount = null,
     Object? likedByUsers = null,
+    Object? latitude = freezed,
+    Object? longitude = freezed,
+    Object? location = freezed,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -119,6 +128,18 @@ class _$TodoCopyWithImpl<$Res, $Val extends Todo>
           ? _value.likedByUsers
           : likedByUsers // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      latitude: freezed == latitude
+          ? _value.latitude
+          : latitude // ignore: cast_nullable_to_non_nullable
+              as String?,
+      longitude: freezed == longitude
+          ? _value.longitude
+          : longitude // ignore: cast_nullable_to_non_nullable
+              as String?,
+      location: freezed == location
+          ? _value.location
+          : location // ignore: cast_nullable_to_non_nullable
+              as String?,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -147,6 +168,9 @@ abstract class _$$TodoImplCopyWith<$Res> implements $TodoCopyWith<$Res> {
       String createdBy,
       int likesCount,
       List<String> likedByUsers,
+      String? latitude,
+      String? longitude,
+      String? location,
       @TimestampConverter() DateTime createdAt,
       @TimestampConverter() DateTime updatedAt});
 }
@@ -171,6 +195,9 @@ class __$$TodoImplCopyWithImpl<$Res>
     Object? createdBy = null,
     Object? likesCount = null,
     Object? likedByUsers = null,
+    Object? latitude = freezed,
+    Object? longitude = freezed,
+    Object? location = freezed,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -207,6 +234,18 @@ class __$$TodoImplCopyWithImpl<$Res>
           ? _value._likedByUsers
           : likedByUsers // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      latitude: freezed == latitude
+          ? _value.latitude
+          : latitude // ignore: cast_nullable_to_non_nullable
+              as String?,
+      longitude: freezed == longitude
+          ? _value.longitude
+          : longitude // ignore: cast_nullable_to_non_nullable
+              as String?,
+      location: freezed == location
+          ? _value.location
+          : location // ignore: cast_nullable_to_non_nullable
+              as String?,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -231,6 +270,9 @@ class _$TodoImpl implements _Todo {
       required this.createdBy,
       required this.likesCount,
       required final List<String> likedByUsers,
+      required this.latitude,
+      required this.longitude,
+      required this.location,
       @TimestampConverter() required this.createdAt,
       @TimestampConverter() required this.updatedAt})
       : _likedByUsers = likedByUsers;
@@ -261,6 +303,12 @@ class _$TodoImpl implements _Todo {
   }
 
   @override
+  final String? latitude;
+  @override
+  final String? longitude;
+  @override
+  final String? location;
+  @override
   @TimestampConverter()
   final DateTime createdAt;
   @override
@@ -269,7 +317,7 @@ class _$TodoImpl implements _Todo {
 
   @override
   String toString() {
-    return 'Todo(id: $id, title: $title, description: $description, isPublish: $isPublish, image: $image, createdBy: $createdBy, likesCount: $likesCount, likedByUsers: $likedByUsers, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'Todo(id: $id, title: $title, description: $description, isPublish: $isPublish, image: $image, createdBy: $createdBy, likesCount: $likesCount, likedByUsers: $likedByUsers, latitude: $latitude, longitude: $longitude, location: $location, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -290,6 +338,12 @@ class _$TodoImpl implements _Todo {
                 other.likesCount == likesCount) &&
             const DeepCollectionEquality()
                 .equals(other._likedByUsers, _likedByUsers) &&
+            (identical(other.latitude, latitude) ||
+                other.latitude == latitude) &&
+            (identical(other.longitude, longitude) ||
+                other.longitude == longitude) &&
+            (identical(other.location, location) ||
+                other.location == location) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -308,6 +362,9 @@ class _$TodoImpl implements _Todo {
       createdBy,
       likesCount,
       const DeepCollectionEquality().hash(_likedByUsers),
+      latitude,
+      longitude,
+      location,
       createdAt,
       updatedAt);
 
@@ -337,6 +394,9 @@ abstract class _Todo implements Todo {
       required final String createdBy,
       required final int likesCount,
       required final List<String> likedByUsers,
+      required final String? latitude,
+      required final String? longitude,
+      required final String? location,
       @TimestampConverter() required final DateTime createdAt,
       @TimestampConverter() required final DateTime updatedAt}) = _$TodoImpl;
 
@@ -358,6 +418,12 @@ abstract class _Todo implements Todo {
   int get likesCount;
   @override
   List<String> get likedByUsers;
+  @override
+  String? get latitude;
+  @override
+  String? get longitude;
+  @override
+  String? get location;
   @override
   @TimestampConverter()
   DateTime get createdAt;

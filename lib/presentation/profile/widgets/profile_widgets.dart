@@ -1,8 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:product_management/config/config.dart';
 import 'package:product_management/data/entities/user/user.dart';
 import 'package:product_management/data/entities/user_provider_data/user_provider_data.dart';
+import 'package:product_management/presentation/profile/widgets/showGoogleMapDialog.dart';
+import 'package:product_management/presentation/todo_add/widgets/location_picker_dialog.dart';
 import 'package:product_management/provider/user/user_view_model.dart';
 import 'package:product_management/utils/extensions/exception_msg.dart';
 import 'package:product_management/widgets/widgets.dart';
@@ -11,9 +15,11 @@ import 'package:flutter_gen/gen_l10n/app_localization.dart';
 class BuildDetailCard extends ConsumerWidget {
   final User userData; // Required User data
   final UserProviderData? userProvider;
+  final UserViewModel userNotifier;
   const BuildDetailCard({
     super.key,
     required this.userData,
+    required this.userNotifier,
     this.userProvider,
   });
 
@@ -92,6 +98,25 @@ class BuildDetailCard extends ConsumerWidget {
                   },
                 );
               },
+            ),
+            TextButton.icon(
+              onPressed: () async {
+                await showDialog<LatLng>(
+                  context: context,
+                  builder: (context) =>
+                      GoogleMapPickerDialog(userNotifier: userNotifier),
+                );
+              },
+              label: Text(
+                AppLocalizations.of(context)!.chooseFromGoogeMap,
+                style: TextStyle(
+                  color: Colors.red.withOpacity(0.5),
+                ),
+              ),
+              icon: Icon(
+                Icons.location_searching_outlined,
+                color: Colors.red.withOpacity(0.6),
+              ),
             ),
             const Divider(),
             buildUserInfoRow(
