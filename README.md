@@ -1,18 +1,36 @@
-# product_management
-
-A new Flutter project.
+# flutter_mvvm
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+##Api Key
+```shell
 
 "GOOGLE_API_KEY": "AIzaSyBqfaZeCJ9FXy62Hid2OnMT9vUbs9IitOo"
+
+```
+
+### Setup Flutter Version Management (FVM)
+```shell
+dart pub global activate fvm
+
+fvm list
+
+fvm releases
+
+fvm install 3.24.3
+
+fvm use 3.24.3
+```
+
+### Running Build Runner for Code Generation
+```shell
+fvm flutter pub run build_runner build --delete-conflicting-outputs
+or 
+flutter pub run build_runner build --delete-conflicting-output
+```
+
+## Download APK File
+You can download the release APK file from the following link:
+
+[Download flutter-mvvm-release.apk](./product-management-release.apk)
+
