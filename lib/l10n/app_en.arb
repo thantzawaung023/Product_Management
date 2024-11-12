@@ -95,7 +95,18 @@
     "myTodoPost":"My Todo Post",
     "recentLikes":"Recent Likes",
     "chooseFromGoogeMap":"Choose From Google Map",
-    "selectYourLocation":"Select Your Location"
-
+    "selectYourLocation":"Select Your Location",
+    "usersLocation":"Users Location",
+    "canSelectAndView":"You can select user location and view their location!",
+    "noUserAvailable":"No users available.",
+    "viewLocationOnMap":"View Location On Map",
+    "mapWithUsersSilder":"Map With Users Silder",
+    "filterOptions":"Filter Options",
+    "showRoute":"Show Route",
+    "showMaker":"Show Maker",
+    "close":"close",
+    "invalidFormat":"is invalid  format!",
+    "passwordMustHave":"Password must have: \nAt least 8+ characters, \nAt least 1 uppercase, 1 lowercase, \nAt least 1 number, 1 special",
+    "locationShouldBe":"\nIt should be (latitude,longitude)\nEg - [37.45889, -122.27254]"
 
 }

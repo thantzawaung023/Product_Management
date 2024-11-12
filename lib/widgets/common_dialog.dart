@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:product_management/utils/extensions/exception_msg.dart';
+import 'package:product_management/utils/utils.dart';
 import 'package:product_management/widgets/custom_text_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
@@ -120,7 +122,7 @@ Future<void> showCustomDialogForm({
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
-              backgroundColor:  Theme.of(context).colorScheme.primary,
+              backgroundColor: Theme.of(context).colorScheme.primary,
               title: Text(
                 title,
                 style: const TextStyle(
@@ -130,7 +132,7 @@ Future<void> showCustomDialogForm({
                 ),
               ),
               content: SizedBox(
-                width: 100,
+                width: 120,
                 child: content,
               ),
               actions: <Widget>[
@@ -283,15 +285,14 @@ Future<void> accountDeleteConfirmationDialog({
   String? okButton,
   bool password = false,
   TextEditingController? passwordController,
-  bool? isPasswordVisible,
   required String cancelButton,
 }) async {
   await showDialog<void>(
     context: context,
-    builder: (
-      BuildContext context,
-    ) {
+    builder: (BuildContext context) {
+      final ValueNotifier<bool> isPasswordVisible = ValueNotifier(false);
       final formKey = GlobalKey<FormState>();
+
       return Form(
         key: formKey,
         child: AlertDialog(
@@ -309,7 +310,7 @@ Future<void> accountDeleteConfirmationDialog({
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const Gap(10),
+                const SizedBox(height: 10),
                 Text(
                   message,
                   style: const TextStyle(
@@ -323,18 +324,41 @@ Future<void> accountDeleteConfirmationDialog({
                     child: Column(
                       children: [
                         Text(
-                          AppLocalizations.of(context)!.enterPassword,
+                          AppLocalizations.of(context)!
+                              .enterPassword, // Replace with localized string if needed
                           style: const TextStyle(
                             fontSize: 13,
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        const Gap(5),
-                        CustomTextField(
-                          label: AppLocalizations.of(context)!.password,
-                          isRequired: true,
-                          controller: passwordController!,
-                          obscured: true,
+                        const SizedBox(height: 5),
+                        ValueListenableBuilder<bool>(
+                          valueListenable: isPasswordVisible,
+                          builder: (context, value, child) {
+                            return TextFormField(
+                              controller: passwordController,
+                              obscureText: !value,
+                              decoration: InputDecoration(
+                                labelText: AppLocalizations.of(context)!
+                                    .password, // Replace with localized string if needed
+                                suffixIcon: IconButton(
+                                  icon: Icon(value
+                                      ? Icons.visibility
+                                      : Icons.visibility_off),
+                                  onPressed: () {
+                                    isPasswordVisible.value = !value;
+                                  },
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return AppLocalizations.of(context)!
+                                      .passwordRequired;
+                                }
+                                return null;
+                              },
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -385,17 +409,17 @@ Future<void> accountDeleteConfirmationDialog({
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        onPressed: () async {
-                          if (formKey.currentState!.validate()) {
+                        onPressed: () {
+                          if (formKey.currentState?.validate() ?? false) {
                             Navigator.of(context).pop();
-                            okFunction!();
+                            if (okFunction != null) okFunction();
                           }
                         },
                       ),
                     ),
                   ),
               ],
-            )
+            ),
           ],
         ),
       );

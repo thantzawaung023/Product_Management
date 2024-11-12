@@ -4,6 +4,11 @@ import 'package:product_management/data/entities/user/user.dart';
 import 'package:product_management/provider/user_list/user_list_state.dart';
 import 'package:product_management/repository/user_repo.dart';
 
+final getuserListWithAddressStream = StreamProvider<List<User?>>((ref) {
+  final userRepository = ref.watch(userRepositoryProvider);
+  return userRepository.fetchUserListWithAddress();
+});
+
 final userListViewModelNotifierProvider =
     StateNotifierProvider.autoDispose<UserListViewModel, UserListState>((ref) {
   final repo = ref.watch(userRepositoryProvider);
@@ -102,9 +107,8 @@ class UserListViewModel extends StateNotifier<UserListState> {
       // Handle generic exceptions
       state = state.copyWith(
         isLoading: false,
-        errorMsg: e.toString(), 
+        errorMsg: e.toString(),
       );
     }
   }
-
 }

@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:product_management/config/app.dart';
-import 'package:product_management/config/navigator.dart';
 import 'package:product_management/presentation/forget_password/forget_password_page.dart';
 import 'package:product_management/presentation/login/widgets/square_tile.dart';
 import 'package:product_management/presentation/register/register_page.dart';
 import 'package:product_management/presentation/varification/verification_page.dart';
 import 'package:product_management/provider/authentication/auth_view_model.dart';
 import 'package:product_management/provider/loading/loading_provider.dart';
+import 'package:product_management/utils/utils.dart';
 import 'package:product_management/widgets/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
@@ -25,6 +25,7 @@ class LoginPage extends HookConsumerWidget {
     final passwordController =
         useTextEditingController(); // Using hook for controller
     final formKey = useMemoized(() => GlobalKey<FormState>());
+    final isPasswordVisible = useState(false);
 
     login() async {
       if (formKey.currentState!.validate()) {
@@ -40,7 +41,7 @@ class LoginPage extends HookConsumerWidget {
           if (authUser != null) {
             Navigator.of(context).pushAndRemoveUntil<void>(
               MaterialPageRoute(
-                builder: (context) => AppNavigator(userId: authUser.uid),
+                builder: (context) => const MyApp(),
               ),
               (route) => false,
             );
@@ -87,29 +88,34 @@ class LoginPage extends HookConsumerWidget {
 
                   // Email Text Box
                   CustomTextField(
-                      controller: emailController,
-                      label: localizaton.email,
-                      isRequired: true,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return localizaton.emailRequired;
-                        }
-                        return null;
-                      }),
+                    controller: emailController,
+                    label: localizaton.email,
+                    maxLength: 40,
+                    isRequired: true,
+                    validator: (value) => Validators.validateEmail(
+                      value: value,
+                      labelText: localizaton.email,
+                      context: context
+                    ),
+                  ),
                   const SizedBox(height: 20),
 
                   // Password Text Box
                   CustomTextField(
-                      controller: passwordController,
-                      label: localizaton.password,
-                      obscured: true,
-                      isRequired: true,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return localizaton.passwordRequired;
-                        }
-                        return null;
-                      }),
+                    controller: passwordController,
+                    label: localizaton.password,
+                    maxLength: 26,
+                    obscured: !isPasswordVisible.value,
+                    isRequired: true,
+                    validator: (value) => Validators.validatePassword(
+                      value: value,
+                      labelText: localizaton.password,
+                      context: context
+                    ),
+                    onTogglePassword: (isVisible) {
+                      isPasswordVisible.value = !isVisible;
+                    },
+                  ),
                   const SizedBox(height: 15),
 
                   Align(
@@ -169,8 +175,7 @@ class LoginPage extends HookConsumerWidget {
                             if (authUser != null) {
                               Navigator.of(context).pushAndRemoveUntil<void>(
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      MyApp(),
+                                  builder: (context) => const MyApp(),
                                 ),
                                 (route) => false,
                               );
@@ -190,14 +195,11 @@ class LoginPage extends HookConsumerWidget {
                           try {
                             await authViewModelNotifier.signInWithGitHub();
                             if (!context.mounted) return;
-
                             final authUser = FirebaseAuth.instance.currentUser;
                             if (authUser != null) {
                               Navigator.of(context).pushAndRemoveUntil<void>(
                                 MaterialPageRoute(
-                                  builder: (context) => !authUser.emailVerified
-                                      ? const EmailVerificationPage()
-                                      : AppNavigator(userId: authUser.uid),
+                                  builder: (context) => const MyApp(),
                                 ),
                                 (route) => false,
                               );

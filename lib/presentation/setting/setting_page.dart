@@ -10,7 +10,6 @@ import 'package:product_management/presentation/setting/widgets/language_dropdwo
 import 'package:product_management/provider/Them/them_provider.dart';
 import 'package:product_management/provider/authentication/auth_view_model.dart';
 import 'package:product_management/provider/loading/loading_provider.dart';
-import 'package:product_management/provider/todo/todo_notifier.dart';
 import 'package:product_management/provider/todo_list/todo_list_notifier.dart';
 import 'package:product_management/provider/user/user_view_model.dart';
 import 'package:product_management/utils/extensions/exception_msg.dart';

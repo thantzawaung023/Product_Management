@@ -6,7 +6,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:product_management/config/config.dart';
-import 'package:product_management/data/entities/address/address.dart';
 import 'package:product_management/data/entities/user/user.dart';
 import 'package:product_management/data/entities/user_provider_data/user_provider_data.dart';
 import 'package:product_management/utils/storage/provider_setting.dart';
@@ -17,6 +16,7 @@ abstract class BaseUserRepository {
   Stream<auth.User?> authUserStream();
   Future<User?> getUserFuture({required String userId});
   Stream<User?> getUserStream({required String userId});
+  Stream<List<User?>> fetchUserListWithAddress();
   Future<void> updateProvider(User user);
   Future<void> create(String authUserId);
   String get generateNewId;
@@ -121,9 +121,6 @@ class UserRepositoryImpl implements BaseUserRepository {
 
       await userCredential.user!.updateDisplayName(user.name);
 
-      // Send email verification
-      // await userCredential.user?.sendEmailVerification();
-
       // Save provider type in local settings
       await CurrentProviderSetting().update(providerId: 'password');
     } on auth.FirebaseAuthException catch (error) {
@@ -167,6 +164,34 @@ class UserRepositoryImpl implements BaseUserRepository {
     } catch (e) {
       logger.e('⚡ ERROR in signOut: $e');
       rethrow;
+    }
+  }
+
+  @override
+  Stream<List<User?>> fetchUserListWithAddress() {
+    try {
+      final user = auth.FirebaseAuth.instance.currentUser;
+
+      if (user == null) {
+        // Return an error stream if no authenticated user is found
+        return Stream.error('No authenticated user found.');
+      }
+
+      final snapshotData = _dbUser
+          .where('address', isNotEqualTo: null) // Checks for non-null address
+          .where('id',
+              isNotEqualTo: user.uid) // Exclude the current user's ID
+          .orderBy('createdAt', descending: true)
+          .snapshots();
+      return snapshotData.map((snapshot) {
+        return snapshot.docs.map((doc) {
+          final data = doc.data();
+          return User.fromJson(data);
+        }).toList();
+      });
+    } on FirebaseException catch (error) {
+      logger.e('Error fetching user list: $error');
+      return Stream.error('Error fetching user list: ${error.message}');
     }
   }
 
@@ -387,7 +412,6 @@ class UserRepositoryImpl implements BaseUserRepository {
       email: currentUser.email!,
       password: '',
       profile: '',
-      address: Address(name: '', location: ''),
       providerData: [userProviderData],
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),

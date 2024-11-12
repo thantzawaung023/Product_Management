@@ -16,6 +16,7 @@ class RegisterPage extends ConsumerStatefulWidget {
 
 class RegisterPageState extends ConsumerState<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
+  bool isPasswordVisible = false;
 
   // Controllers for the form fields
   final TextEditingController _emailController = TextEditingController();
@@ -60,12 +61,12 @@ class RegisterPageState extends ConsumerState<RegisterPage> {
                   controller: _emailController, // Add controller
                   label: localization.email,
                   isRequired: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return localization.emailRequired;
-                    }
-                    return null;
-                  },
+                  maxLength: 40,
+                  validator: (value) => Validators.validateEmail(
+                    value: value,
+                    labelText: localization.email,
+                    context: context,
+                  ),
                 ),
                 const SizedBox(
                   height: 15,
@@ -74,13 +75,13 @@ class RegisterPageState extends ConsumerState<RegisterPage> {
                 CustomTextField(
                   controller: _nameController, // Add controller
                   label: localization.name,
+                  maxLength: 40,
                   isRequired: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return localization.nameRequired;
-                    }
-                    return null;
-                  },
+                  validator: (value) => Validators.validateRequiredField(
+                    value: value,
+                    labelText: localization.name,
+                    context: context,
+                  ),
                 ),
                 const SizedBox(
                   height: 15,
@@ -91,12 +92,16 @@ class RegisterPageState extends ConsumerState<RegisterPage> {
                   controller: _passwordController, // Add controller
                   label: localization.password,
                   isRequired: true,
-                  obscured: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return localization.passwordRequired;
-                    }
-                    return null;
+                  maxLength: 26,
+                  obscured: !isPasswordVisible,
+                  validator: (value) => Validators.validatePassword(
+                      value: value,
+                      labelText: localization.password,
+                      context: context),
+                  onTogglePassword: (isVisible) {
+                    setState(() {
+                      isPasswordVisible = !isVisible;
+                    });
                   },
                 ),
 

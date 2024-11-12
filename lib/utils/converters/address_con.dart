@@ -10,7 +10,12 @@ class NullableAddressConverters
     if (json == null) {
       return null;
     }
-    return Address.fromJson(json);
+    try {
+      return Address.fromJson(json);
+    } catch (e) {
+      print('Error converting address from JSON: $json');
+      rethrow;
+    }
   }
 
   @override

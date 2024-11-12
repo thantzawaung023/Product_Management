@@ -10,14 +10,18 @@ class CustomTextField extends StatelessWidget {
     this.onChanged,
     this.isRequired = false,
     this.validator,
+    this.helperText = '',
     this.maxLength,
     this.isReadOnly = false,
     this.isEnabled = true,
     this.obscured = false,
+    this.onTogglePassword,
+    this.keyboardType = TextInputType.text,
   }) : _controller = controller;
 
   final TextEditingController? _controller;
   final String label;
+  final String helperText;
   final String? initialValue;
   final ValueChanged<String>? onChanged;
   final bool isRequired;
@@ -26,6 +30,8 @@ class CustomTextField extends StatelessWidget {
   final bool isReadOnly;
   final bool isEnabled;
   final bool obscured;
+  final TextInputType keyboardType;
+  final ValueChanged<bool>? onTogglePassword;
 
   @override
   Widget build(BuildContext context) {
@@ -35,17 +41,24 @@ class CustomTextField extends StatelessWidget {
       maxLength: maxLength,
       autocorrect: true,
       controller: _controller,
+      keyboardType: keyboardType,
       obscureText: obscured,
       decoration: InputDecoration(
-          enabledBorder: const OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.white)),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey.shade400),
-          ),
-          fillColor: Theme.of(context).colorScheme.surface,
-          filled: true,
-          hintText: label,
-          hintStyle: TextStyle(color: Colors.grey[600])),
+        isDense: true,
+        enabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white)),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey.shade400),
+        ),
+        fillColor: Theme.of(context).colorScheme.surface,
+        filled: true,
+        hintText: label,
+        helperText: helperText,
+        hintStyle: TextStyle(color: Colors.grey[600]),
+        suffixIcon: (label.contains('Password') || label.contains('စကားဝှက်'))
+            ? _buildPasswordToggleIcon(obscured, onTogglePassword)
+            : null,
+      ),
       onChanged: onChanged,
       validator: validator ??
           (value) {
@@ -56,4 +69,18 @@ class CustomTextField extends StatelessWidget {
           },
     );
   }
+}
+
+/// Builds the suffix icon for the password field
+Widget? _buildPasswordToggleIcon(
+    bool obscured, ValueChanged<bool>? onTogglePassword) {
+  return IconButton(
+    icon: Icon(
+      obscured ? Icons.visibility_off : Icons.visibility,
+      color: Colors.black,
+    ),
+    onPressed: () {
+      onTogglePassword?.call(!obscured);
+    },
+  );
 }

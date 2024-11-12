@@ -2,13 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:product_management/config/config.dart';
 import 'package:product_management/data/entities/user/user.dart';
 import 'package:product_management/data/entities/user_provider_data/user_provider_data.dart';
 import 'package:product_management/presentation/profile/widgets/showGoogleMapDialog.dart';
-import 'package:product_management/presentation/todo_add/widgets/location_picker_dialog.dart';
 import 'package:product_management/provider/user/user_view_model.dart';
 import 'package:product_management/utils/extensions/exception_msg.dart';
+import 'package:product_management/utils/utils.dart';
 import 'package:product_management/widgets/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
@@ -80,8 +79,8 @@ class BuildDetailCard extends ConsumerWidget {
                 // Open dialog to update address
                 showEditAddressDialog(
                   context,
-                  addressName: userData.address!.name,
-                  addressLocation: userData.address!.location,
+                  addressName: userData.address?.name ?? "",
+                  addressLocation: userData.address?.location ?? "",
                   onSave: (name, location) async {
                     try {
                       final userNotifier = ref.read(
@@ -376,17 +375,27 @@ Future<void> showEditAddressDialog(
         mainAxisSize: MainAxisSize.min,
         children: [
           CustomTextField(
-            maxLength: 40,
+            maxLength: 255,
             label: AppLocalizations.of(context)!.addressName,
             initialValue: addressName,
             onChanged: (value) => name = value,
+            validator: (value) => Validators.validateAddressName(
+                value: value,
+                labelText: AppLocalizations.of(context)!.addressName,
+                context: context),
           ),
           const SizedBox(height: 16),
           CustomTextField(
-            maxLength: 40,
+            maxLength: 35,
             label: AppLocalizations.of(context)!.addressLocation,
+            helperText: 'Eg - 37.45889, -122.27254',
             initialValue: addressLocation,
             onChanged: (value) => location = value,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            validator: (value) => Validators.validateAddressLocation(
+                value: value,
+                labelText: AppLocalizations.of(context)!.addressLocation,
+                context: context),
           ),
         ],
       ),

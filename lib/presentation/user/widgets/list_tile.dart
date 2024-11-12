@@ -54,7 +54,7 @@ class UserListTile extends StatelessWidget {
         ),
         leading: isSelectionMode
             ? Checkbox(
-              activeColor: Colors.amber,
+                activeColor: Colors.amber,
                 value: isSelected,
                 onChanged: (bool? value) {
                   onItemSelect(user.id, value ?? false);
@@ -83,6 +83,49 @@ class UserListTile extends StatelessWidget {
           // Trigger selection mode from the parent by handling the long press.
           onItemSelect(user.id, !isSelected);
         },
+      ),
+    );
+  }
+}
+
+class UserTile extends StatelessWidget {
+  final User user;
+  final Set<User> selectedUsers;
+  final Function(User, bool) onItemSelect; // Callback to manage selection
+
+  const UserTile({
+    super.key,
+    required this.user,
+    required this.selectedUsers,
+    required this.onItemSelect,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isSelected = selectedUsers.contains(user);
+    return Container(
+      padding: const EdgeInsets.only(left: 3, bottom: 5, top: 5),
+      margin: const EdgeInsets.only(bottom: 0, left: 3, right: 3, top: 5),
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor,
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
+      ),
+      child: ListTile(
+        title: Text(
+          user.name.toString(),
+          style: const TextStyle(overflow: TextOverflow.ellipsis),
+        ),
+        subtitle: Text(
+          user.email,
+          style: const TextStyle(fontSize: 12, overflow: TextOverflow.ellipsis),
+        ),
+        leading: Checkbox(
+          activeColor: Colors.indigo,
+          value: isSelected,
+          onChanged: (bool? value) {
+            onItemSelect(user, value ?? false);
+          },
+        ),
       ),
     );
   }

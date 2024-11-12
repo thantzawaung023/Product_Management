@@ -4,6 +4,7 @@ import 'package:product_management/config/app.dart';
 import 'package:product_management/data/entities/user/user.dart';
 import 'package:product_management/provider/loading/loading_provider.dart';
 import 'package:product_management/provider/user/user_view_model.dart';
+import 'package:product_management/utils/utils.dart';
 import 'package:product_management/widgets/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
@@ -15,10 +16,11 @@ class UserCreatePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final localizations = AppLocalizations.of(context)!;
+    final localization = AppLocalizations.of(context)!;
     final isLoading = ref.watch(loadingProvider);
     final userViewModelNotifier =
         ref.watch(userViewModelNotifierProvider(user).notifier);
+    final ValueNotifier<bool> isPasswordVisible = ValueNotifier(false);
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -43,71 +45,47 @@ class UserCreatePage extends ConsumerWidget {
                   height: 20,
                 ),
                 CustomTextField(
-                  label: localizations.email,
+                  label: localization.email,
                   onChanged: userViewModelNotifier.setEmail,
                   isRequired: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return localizations.emailRequired;
-                    }
-                    return null;
-                  },
+                  validator: (value) => Validators.validateEmail(
+                    value: value,
+                    labelText: localization.email,
+                    context: context,
+                  ),
                 ),
                 const SizedBox(
                   height: 15,
                 ),
                 CustomTextField(
-                  label: localizations.name,
+                  label: localization.name,
                   onChanged: userViewModelNotifier.setName,
                   isRequired: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return localizations.nameRequired;
-                    }
-                    return null;
-                  },
+                  validator: (value) => Validators.validateRequiredField(
+                    value: value,
+                    labelText: localization.name,
+                    context: context,
+                  ),
                 ),
                 const SizedBox(
                   height: 15,
                 ),
-                CustomTextField(
-                  label: localizations.addressName,
-                  onChanged: userViewModelNotifier.setAddressName,
-                  isRequired: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return localizations.addressNameRequired;
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                CustomTextField(
-                  label: localizations.addressLocation,
-                  onChanged: userViewModelNotifier.setAddressLocation,
-                  isRequired: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return localizations.addressLocationRequired;
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                CustomTextField(
-                  label: localizations.password,
-                  onChanged: userViewModelNotifier.setPassword,
-                  isRequired: true,
-                  obscured: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return localizations.passwordRequired;
-                    }
-                    return null;
+                ValueListenableBuilder<bool>(
+                  valueListenable: isPasswordVisible,
+                  builder: (context, value, child) {
+                    return CustomTextField(
+                      label: localization.password,
+                      onChanged: userViewModelNotifier.setPassword,
+                      isRequired: true,
+                      obscured: !value,
+                      validator: (value) => Validators.validatePassword(
+                        value: value,
+                        labelText: localization.password,
+                        context: context,
+                      ),
+                      onTogglePassword: (value) =>
+                          isPasswordVisible.value = !value,
+                    );
                   },
                 ),
                 const SizedBox(
@@ -115,7 +93,7 @@ class UserCreatePage extends ConsumerWidget {
                 ),
                 const SizedBox(height: 20),
                 CustomButton(
-                  label: isLoading ? '' : localizations.save,
+                  label: isLoading ? '' : localization.save,
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       ref.read(loadingProvider.notifier).state = true;
@@ -125,7 +103,7 @@ class UserCreatePage extends ConsumerWidget {
                         if (context.mounted) {
                           showCustomDialogForm(
                             context: context,
-                            title: localizations.success,
+                            title: localization.success,
                             content: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -133,7 +111,7 @@ class UserCreatePage extends ConsumerWidget {
                                     color: Colors.amber, size: 100),
                                 const SizedBox(height: 16),
                                 Text(
-                                  localizations.successUserCreate,
+                                  localization.successUserCreate,
                                   style: const TextStyle(
                                     color: Colors.greenAccent,
                                     fontSize: 20,
@@ -142,7 +120,7 @@ class UserCreatePage extends ConsumerWidget {
                                   textAlign: TextAlign.center,
                                 ),
                                 const SizedBox(height: 8),
-                                Text(localizations.verifyEmail),
+                                Text(localization.verifyEmail),
                               ],
                             ),
                             onSave: () =>

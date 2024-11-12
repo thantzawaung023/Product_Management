@@ -130,7 +130,7 @@ class UserViewModel extends StateNotifier<UserState> {
         email: state.email.trim(),
         password: state.password,
         profile: state.profile ?? '',
-        address: state.address ?? Address(name: '', location: ''),
+        address: state.address,
         createdAt: state.createdAt ?? DateTime.now(),
         updatedAt: DateTime.now(),
       );
@@ -157,7 +157,7 @@ class UserViewModel extends StateNotifier<UserState> {
         email: state.email.trim(),
         password: state.password,
         profile: state.profile ?? '',
-        address: state.address ?? Address(name: '', location: ''),
+        address: state.address,
         createdAt: state.createdAt ?? DateTime.now(),
         updatedAt: DateTime.now(),
       );
