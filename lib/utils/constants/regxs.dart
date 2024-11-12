@@ -31,9 +31,9 @@ class Regxs {
   // Validate address location format
   static bool validateAddressLocation(String addressLocation) {
     final location = addressLocation.split(',');
-    if (location.length != 2)
+    if (location.length != 2) {
       return false; // Ensure there are two parts (lat, lng)
-
+    }
     final latitude = location[0].trim();
     final longitude = location[1].trim();
 

@@ -25,7 +25,11 @@ class LocationPickerDialogState extends State<LocationPickerDialog> {
     bool permissionGranted = await _requestLocationPermission();
     if (permissionGranted) {
       try {
-        Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+        Position position = await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.high,
+          ),
+        );
         setState(() {
           _currentPosition = LatLng(position.latitude, position.longitude);
           _pickedLocation =
@@ -33,14 +37,19 @@ class LocationPickerDialogState extends State<LocationPickerDialog> {
           _isLoading = false; // Stop loading
         });
       } catch (e) {
-        // Handle the error here
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Could not get current location: $e")),
-        );
-        Navigator.of(context).pop(); // Close the dialog on error
+        if (mounted) {
+          // Handle the error here
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Could not get current location: $e")),
+          );
+          Navigator.of(context).pop(); // Close the dialog on error
+        }
       }
     } else {
-      Navigator.of(context).pop(); // Close the dialog if permission not granted
+      if (mounted) {
+        Navigator.of(context)
+            .pop(); // Close the dialog if permission not granted
+      }
     }
   }
 

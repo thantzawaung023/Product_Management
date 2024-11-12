@@ -162,7 +162,7 @@ class ToDoList extends ConsumerWidget {
       return Center(child: Text('${todoListState.errorMsg}'));
     }
 
-    if (todoListState.todoList == null || todoListState.todoList.isEmpty) {
+    if (todoListState.todoList.isEmpty) {
       return Center(
           child: Text(AppLocalizations.of(context)!.todoNotAvailable));
     }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:product_management/data/entities/user/user.dart';
-import 'package:product_management/presentation/profile/widgets/showGoogleMapDialog.dart';
+import 'package:product_management/presentation/profile/widgets/show_google_map_dialog.dart';
 import 'package:product_management/presentation/user_update/widgets/profile_image.dart';
 import 'package:product_management/provider/loading/loading_provider.dart';
 import 'package:product_management/provider/user/user_view_model.dart';

@@ -285,10 +285,9 @@ class UserViewModel extends StateNotifier<UserState> {
             (place.thoroughfare != null && place.thoroughfare != '')
                 ? '${place.name}, ${place.thoroughfare}'
                 : '${place.name}';
-        address +=
-            (place.subLocality != null && place.subLocality != '') != null
-                ? ', ${place.subLocality}'
-                : '';
+        address += (place.subLocality != null && place.subLocality != '')
+            ? ', ${place.subLocality}'
+            : '';
         address += (place.street != null && place.street != '')
             ? ', ${place.street}'
             : '';

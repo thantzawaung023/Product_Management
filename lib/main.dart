@@ -6,6 +6,7 @@ import 'package:product_management/firebase_options.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 void main() async {
+  // ignore: constant_identifier_names
   const google_api_key = String.fromEnvironment('GOOGLE_API_KEY');
   logger.i('🎯 GOOGLE_API_KEY : $google_api_key');
   WidgetsFlutterBinding.ensureInitialized();

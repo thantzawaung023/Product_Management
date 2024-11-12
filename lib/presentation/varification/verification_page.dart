@@ -122,8 +122,10 @@ class EmailVerificationPageState extends ConsumerState<EmailVerificationPage> {
                   ? null // Disable button while loading
                   : () async {
                       await authViewModel.sendVerificationEmail();
-                      showSnackBar(context, localization.verifyHasBeenReSend,
-                          Colors.green);
+                      if (context.mounted) {
+                        showSnackBar(context, localization.verifyHasBeenReSend,
+                            Colors.green);
+                      }
                     },
               child: Text(localization.verifyReSend),
             ),

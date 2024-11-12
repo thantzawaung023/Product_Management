@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gap/gap.dart';
 import 'package:product_management/utils/extensions/exception_msg.dart';
-import 'package:product_management/utils/utils.dart';
-import 'package:product_management/widgets/custom_text_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 Future<bool> showConfirmDialog({

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:product_management/provider/user/user_state.dart';
 import 'package:product_management/provider/user/user_view_model.dart';
-import 'package:product_management/utils/utils.dart';
 import 'package:product_management/widgets/common_dialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 

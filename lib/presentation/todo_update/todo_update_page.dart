@@ -16,13 +16,13 @@ class TodoUpdatePage extends ConsumerWidget {
 
   final _formKey = GlobalKey<FormState>();
   final Todo todo;
-  String? selectedLocation;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isLoading = ref.watch(loadingProvider);
     final todoState = ref.watch(todoNotifierProvider(todo));
     final todoNotifier = ref.watch(todoNotifierProvider(todo).notifier);
+    String? selectedLocation;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,

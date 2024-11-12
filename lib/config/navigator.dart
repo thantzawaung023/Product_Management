@@ -45,7 +45,7 @@ class AppNavigatorState extends ConsumerState<AppNavigator> {
 
     return userAsyncValue.when(
       data: (user) {
-        List<Widget> _pages = [
+        List<Widget> pages = [
           HomePage(user: user!),
           const UserPage(),
           const TodoListPage(),
@@ -78,7 +78,7 @@ class AppNavigatorState extends ConsumerState<AppNavigator> {
                               ),
                               Text(
                                 localizations.canSelectAndView,
-                                style: TextStyle(),
+                                style: const TextStyle(),
                               )
                             ],
                           ),
@@ -86,7 +86,7 @@ class AppNavigatorState extends ConsumerState<AppNavigator> {
                       ),
                       userListStream.when(
                         data: (userList) {
-                          if (userList == null || userList.isEmpty) {
+                          if (userList.isEmpty) {
                             return Center(
                               child: Text(
                                 localizations.noUserAvailable,
@@ -150,7 +150,7 @@ class AppNavigatorState extends ConsumerState<AppNavigator> {
               PageView(
                 controller: _pageController,
                 onPageChanged: _onItemTapped,
-                children: _pages,
+                children: pages,
               ),
               if (_selectedIndex == 0)
                 Positioned(

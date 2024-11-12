@@ -31,7 +31,6 @@ class TodosNotifier extends StateNotifier<TodoListState> {
   }
 
   final BaseTodoRepository _todoRepository;
-  List<Todo>? _todoList;
 
   @override
   void dispose() {
@@ -46,7 +45,6 @@ class TodosNotifier extends StateNotifier<TodoListState> {
 
       final List<Todo> todoList = [];
       await for (final todos in todoStream) {
-        _todoList = todoList;
         if (mounted) {
           todoList.clear();
           todoList.addAll(todos);
@@ -75,6 +73,7 @@ class TodosNotifier extends StateNotifier<TodoListState> {
       await _todoRepository.deleteTodoListByUser(email);
       state = state.copyWith(isLoading: false);
     } on Exception catch (e) {
+      logger.e(e);
       state = state.copyWith(
         isLoading: false,
       );
@@ -88,6 +87,7 @@ class TodosNotifier extends StateNotifier<TodoListState> {
       await _todoRepository.deleteTodoList(id);
       state = state.copyWith(isLoading: false);
     } on Exception catch (e) {
+      logger.e(e);
       state = state.copyWith(
         isLoading: false,
       );

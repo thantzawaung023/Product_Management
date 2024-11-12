@@ -16,7 +16,7 @@ class UserDetailPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final localizations = AppLocalizations.of(context)!;
     final userId = user.id;
-    if (userId == null || userId.isEmpty) {
+    if (userId.isEmpty) {
       Navigator.of(context).pop();
       return Container();
     }
