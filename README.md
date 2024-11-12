@@ -32,5 +32,5 @@ flutter pub run build_runner build --delete-conflicting-output
 ## Download APK File
 You can download the release APK file from the following link:
 
-[Download flutter-mvvm-release.apk](./product-management-release.apk)
+[Download flutter-mvvm-release.apk](./product-management.apk)
 
