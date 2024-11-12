@@ -43,6 +43,6 @@ app.*.map.json
 /android/app/release
 
 # Ignore API key files
-api_keys.dev.json
-api_keys.prod.json
+# api_keys.dev.json
+# api_keys.prod.json
 

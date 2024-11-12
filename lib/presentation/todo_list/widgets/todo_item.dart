@@ -61,13 +61,13 @@ class TodoItemState extends ConsumerState<TodoItem> {
                 children: [
                   Expanded(
                     child: Text(
-                      widget.todo.title, // Display the actual todo title
+                      widget.todo.title,
                       style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
                       ),
                       maxLines: 1,
-                      overflow: TextOverflow.ellipsis, // Prevent overflow
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   widget.todo.isPublish
@@ -81,22 +81,20 @@ class TodoItemState extends ConsumerState<TodoItem> {
                         ),
                 ],
               ),
-
               const Divider(
                 thickness: 1,
                 color: Colors.black45,
                 height: 1,
               ),
               const SizedBox(height: 3),
-              // Wrap the description in a Flexible widget
               Row(
                 children: [
                   Expanded(
                     child: Text(
-                      widget.todo.description, // Display the actual description
+                      widget.todo.description,
                       style: const TextStyle(fontSize: 13),
-                      maxLines: 3, // Limit the number of lines
-                      overflow: TextOverflow.ellipsis, // Prevent overflow
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
@@ -117,9 +115,9 @@ class TodoItemState extends ConsumerState<TodoItem> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      widget.todo.createdBy, // Display the actual author name
+                      widget.todo.createdBy,
                       style: const TextStyle(fontSize: 12),
-                      overflow: TextOverflow.ellipsis, // Prevent overflow
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
@@ -133,13 +131,13 @@ class TodoItemState extends ConsumerState<TodoItem> {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    DateFormat('dd/MM/yyyy HH:mm').format(
-                        widget.todo.createdAt), // Display the actual date
+                    DateFormat('dd/MM/yyyy HH:mm')
+                        .format(widget.todo.createdAt),
                     style: const TextStyle(fontSize: 12),
                   ),
                 ],
               ),
-              if (widget.todo.location != null)
+              if (widget.todo.location != null && widget.todo.location != '')
                 Row(
                   children: [
                     const Icon(
@@ -150,12 +148,12 @@ class TodoItemState extends ConsumerState<TodoItem> {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        widget.todo.location!, // Display the actual todo title
+                        widget.todo.location!,
                         style: const TextStyle(
                           fontSize: 11,
                         ),
                         maxLines: 1,
-                        overflow: TextOverflow.ellipsis, // Prevent overflow
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
@@ -168,14 +166,12 @@ class TodoItemState extends ConsumerState<TodoItem> {
             TextButton.icon(
                 onPressed: () {
                   if (!widget.todo.likedByUsers.contains(user!.uid)) {
-                    // If the user hasn't liked it yet, add their UID to likedByUsers
                     todoNotifier.updateLikes(
                       widget.todo.id,
                       widget.todo.likesCount + 1,
                       [...widget.todo.likedByUsers, user.uid],
                     );
                   } else {
-                    // If the user has already liked it, remove their UID from likedByUsers
                     todoNotifier.updateLikes(
                       widget.todo.id,
                       widget.todo.likesCount - 1,
