@@ -27,6 +27,7 @@ class SettingPage extends HookConsumerWidget {
         .watch(userProviderStream(userId)); // Watch user data based on userId
     final currentUser = auth.FirebaseAuth.instance.currentUser;
     final passwordInputController = useTextEditingController();
+    final themeNotifier = ref.watch(themeProvider.notifier);
     final isLightMode = ref.watch(themeProvider) == ThemeMode.light;
     final providerId = useState<String?>('');
     final supportedLocales = {
@@ -188,9 +189,9 @@ class SettingPage extends HookConsumerWidget {
                           color: Colors.white),
                     ),
                     value: isLightMode,
-                    onChanged: (value) {
-                      ref.watch(themeProvider.notifier).state =
-                          value ? ThemeMode.light : ThemeMode.dark;
+                    onChanged: (value) async {
+                      final themMode = value ? ThemeMode.light : ThemeMode.dark;
+                      themeNotifier.updateTheme(themMode);
                     },
                     // Call changePassword with user
                   ),

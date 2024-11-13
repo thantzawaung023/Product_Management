@@ -14,6 +14,7 @@ class LanguageDropdownTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final languageNotifier = ref.read(languageProvider.notifier);
     return Container(
       padding: const EdgeInsets.only(left: 16, right: 16),
       decoration: BoxDecoration(
@@ -57,8 +58,7 @@ class LanguageDropdownTile extends StatelessWidget {
           }).toList(),
           onChanged: (newValue) {
             if (newValue != null) {
-              ref.read(languageProvider.notifier).state =
-                  newValue; // Update the locale
+              languageNotifier.updateLanguage(newValue);
             }
           }),
     );
