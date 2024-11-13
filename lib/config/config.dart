@@ -1,3 +1,3 @@
 export 'app.dart';
 export 'logger.dart';
-export 'navigator.dart';
+export 'navigator/navigator.dart';

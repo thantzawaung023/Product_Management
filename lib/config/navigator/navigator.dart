@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:product_management/config/config.dart';
+import 'package:product_management/config/navigator/widgets/map_screen.dart';
 import 'package:product_management/data/entities/user/user.dart';
 import 'package:product_management/presentation/home/home_page.dart';
 import 'package:product_management/presentation/profile/user_profile.dart';
@@ -11,7 +12,6 @@ import 'package:product_management/presentation/user/widgets/list_tile.dart';
 import 'package:product_management/provider/user/user_view_model.dart';
 import 'package:product_management/provider/user_list/user_list_view_model.dart';
 import 'package:product_management/widgets/custom_btn.dart';
-import 'package:product_management/widgets/map_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class AppNavigator extends ConsumerStatefulWidget {
