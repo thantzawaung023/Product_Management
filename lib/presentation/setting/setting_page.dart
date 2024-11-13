@@ -46,7 +46,8 @@ class SettingPage extends HookConsumerWidget {
 
     Future<void> accountDelete(User user) async {
       final authStateNotifier = ref.watch(authNotifierProvider.notifier);
-      final todoListStateNotifier = ref.watch(todoListNotifierProvider.notifier);
+      final todoListStateNotifier =
+          ref.watch(todoListNotifierProvider.notifier);
       await accountDeleteConfirmationDialog(
         context: context,
         title: AppLocalizations.of(context)!.deleteAccount,
@@ -93,7 +94,7 @@ class SettingPage extends HookConsumerWidget {
         context: context,
         message: AppLocalizations.of(context)!.confirmLogout,
       );
-      if (shouldDelete == true) {
+      if (shouldDelete) {
         try {
           final authNotifier = ref.watch(authNotifierProvider.notifier);
           await authNotifier.signOut();

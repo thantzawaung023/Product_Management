@@ -112,7 +112,7 @@ class _UserPageState extends ConsumerState<UserPage> {
                         context: context,
                         message: localization.confirmDelete,
                       );
-                      if (shouldDelete == true) {
+                      if (shouldDelete) {
                         deleteUser(); // deleteUser for async handling
                       }
                     }
