@@ -178,11 +178,13 @@ class UserRepositoryImpl implements BaseUserRepository {
       }
 
       final snapshotData = _dbUser
-          .where('address', isNotEqualTo: null) // Checks for non-null address
-          .where('id',
-              isNotEqualTo: user.uid) // Exclude the current user's ID
+          .where('address.location',
+              isGreaterThan:
+                  '') // This excludes documents with no address.name or empty strings
+          .where('id', isNotEqualTo: user.uid) // Exclude the current user's ID
           .orderBy('createdAt', descending: true)
           .snapshots();
+
       return snapshotData.map((snapshot) {
         return snapshot.docs.map((doc) {
           final data = doc.data();

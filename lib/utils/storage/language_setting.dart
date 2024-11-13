@@ -16,7 +16,6 @@ class CurrentLanguageSetting {
   Future<Locale?> get() async {
     final box = GetStorage();
     final languageString = box.read<String?>(_currentLanguageKey);
-    logger.e('language string is $languageString');
     if (languageString == 'en') {
       return const Locale('en');
     } else if (languageString == 'my') {
@@ -28,7 +27,6 @@ class CurrentLanguageSetting {
   Future<void> update({required Locale language}) async {
     final box = GetStorage();
     final languageString = language.toString();
-    logger.e('language is $language');
     await box.write(_currentLanguageKey, languageString);
   }
 }

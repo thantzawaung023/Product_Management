@@ -52,7 +52,6 @@ class AppNavigatorState extends ConsumerState<AppNavigator> {
           UserProfilePage(userId: widget.userId),
           SettingPage(userId: widget.userId),
         ];
-
         return Scaffold(
           key: _scaffoldKey,
           drawer: _selectedIndex == 0 || _selectedIndex == 1

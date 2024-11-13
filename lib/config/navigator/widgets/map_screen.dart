@@ -18,6 +18,7 @@ class MapScreen extends ConsumerStatefulWidget {
 class MapScreenState extends ConsumerState<MapScreen> {
   late GoogleMapController _mapController;
   LatLng _currentPosition = const LatLng(0, 0);
+  bool _isLocationLoaded = false; // Flag to track location load status
   bool _showAllUsers = true;
   bool _showRoute = true;
   List<Marker> userMarkers = [];
@@ -63,8 +64,9 @@ class MapScreenState extends ConsumerState<MapScreen> {
     }
 
     setState(() {
-      _routePolyline = _routePolyline.copyWith(
-          pointsParam: locations); // Update polyline with all user locations
+      _routePolyline = _routePolyline.copyWith(pointsParam: locations);
+      _isLocationLoaded =
+          true; // Set flag to true after markers are initialized
     });
   }
 
@@ -82,17 +84,15 @@ class MapScreenState extends ConsumerState<MapScreen> {
         });
       } catch (e) {
         if (mounted) {
-          // Handle the error here
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Could not get current location: $e")),
           );
-          Navigator.of(context).pop(); // Close the dialog on error
+          Navigator.of(context).pop();
         }
       }
     } else {
       if (mounted) {
-        Navigator.of(context)
-            .pop(); // Close the dialog if permission not granted
+        Navigator.of(context).pop();
       }
     }
   }
@@ -168,85 +168,87 @@ class MapScreenState extends ConsumerState<MapScreen> {
           ),
         ],
       ),
-      body: Stack(
-        children: [
-          // Google Map widget
-          GoogleMap(
-            onMapCreated: (controller) {
-              _mapController = controller;
-            },
-            initialCameraPosition: CameraPosition(
-              target: _currentPosition,
-              zoom: 12.0,
-            ),
-            markers: allMarkers,
-            polylines: _showRoute ? {_routePolyline} : {},
-          ),
-
-          // Carousel slider for gallery cards
-          Positioned(
-            left: 0,
-            right: 0,
-            top: 20,
-            child: CarouselSlider(
-              options: CarouselOptions(
-                aspectRatio: 16 / 9,
-                height: 150.0,
-                enableInfiniteScroll: false,
-                viewportFraction: 0.8,
-                enlargeCenterPage: true,
-              ),
-              items: widget.users.map((user) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return GestureDetector(
-                      onTap: () {
-                        final address = user.address!.location.split(',');
-                        final position = LatLng(
-                            double.parse(address[0]), double.parse(address[1]));
-                        // Move the camera to the selected gallery location
-                        _mapController.animateCamera(
-                          CameraUpdate.newLatLng(position),
-                        );
-                      },
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        elevation: 5,
-                        child: Container(
-                          padding: const EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                user.name,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+      body: _isLocationLoaded
+          ? Stack(
+              children: [
+                // Google Map widget
+                GoogleMap(
+                  onMapCreated: (controller) {
+                    _mapController = controller;
+                  },
+                  initialCameraPosition: CameraPosition(
+                    target: _currentPosition,
+                    zoom: 12.0,
+                  ),
+                  markers: allMarkers,
+                  polylines: _showRoute ? {_routePolyline} : {},
+                ),
+                // Carousel slider for gallery cards
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  top: 20,
+                  child: CarouselSlider(
+                    options: CarouselOptions(
+                      aspectRatio: 16 / 9,
+                      height: 150.0,
+                      enableInfiniteScroll: false,
+                      viewportFraction: 0.8,
+                      enlargeCenterPage: true,
+                    ),
+                    items: widget.users.map((user) {
+                      return Builder(
+                        builder: (BuildContext context) {
+                          return GestureDetector(
+                            onTap: () {
+                              final address = user.address!.location.split(',');
+                              final position = LatLng(double.parse(address[0]),
+                                  double.parse(address[1]));
+                              // Move the camera to the selected gallery location
+                              _mapController.animateCamera(
+                                CameraUpdate.newLatLng(position),
+                              );
+                            },
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              elevation: 5,
+                              child: Container(
+                                padding: const EdgeInsets.all(8.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      user.name,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      user.email,
+                                      style: const TextStyle(fontSize: 12),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              const SizedBox(height: 8),
-                              Text(
-                                user.email,
-                                style: const TextStyle(fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              }).toList(),
-            ),
-          ),
-        ],
-      ),
+                            ),
+                          );
+                        },
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
+            )
+          : const Center(
+              child: CircularProgressIndicator()), // Loading indicator
     );
   }
 }
