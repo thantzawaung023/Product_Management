@@ -93,10 +93,9 @@ class LoginPage extends HookConsumerWidget {
                     maxLength: 40,
                     isRequired: true,
                     validator: (value) => Validators.validateEmail(
-                      value: value,
-                      labelText: localizaton.email,
-                      context: context
-                    ),
+                        value: value,
+                        labelText: localizaton.email,
+                        context: context),
                   ),
                   const SizedBox(height: 20),
 
@@ -108,10 +107,9 @@ class LoginPage extends HookConsumerWidget {
                     obscured: !isPasswordVisible.value,
                     isRequired: true,
                     validator: (value) => Validators.validatePassword(
-                      value: value,
-                      labelText: localizaton.password,
-                      context: context
-                    ),
+                        value: value,
+                        labelText: localizaton.password,
+                        context: context),
                     onTogglePassword: (isVisible) {
                       isPasswordVisible.value = !isVisible;
                     },

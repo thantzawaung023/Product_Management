@@ -39,7 +39,6 @@ class TodoListPageState extends ConsumerState<TodoListPage> {
           children: [
             Column(
               children: [
-
                 //Carousel Slide
                 CustomCarouselSlider(),
                 SizedBox(height: 15),

@@ -92,7 +92,7 @@ class ForgetPasswordPage extends HookConsumerWidget {
                             ref
                                 .watch(loadingProvider.notifier)
                                 .update((state) => false);
-                            showSnackBar(context, e.getMessage,Colors.red);
+                            showSnackBar(context, e.getMessage, Colors.red);
                           }
                         }
                       }),

@@ -29,12 +29,12 @@ class CustomButtonState extends State<CustomButton> {
         ),
         child: Center(
           child: _isLoading
-              ?  CircularProgressIndicator(
+              ? CircularProgressIndicator(
                   color: Theme.of(context).colorScheme.onPrimary,
                 )
               : Text(
                   widget.label,
-                  style:  TextStyle(
+                  style: TextStyle(
                     color: Theme.of(context).colorScheme.onPrimary,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -63,5 +63,3 @@ class CustomButtonState extends State<CustomButton> {
     }
   }
 }
-
-

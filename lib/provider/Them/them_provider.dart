@@ -20,7 +20,7 @@ class ThemeNotifier extends StateNotifier<ThemeMode> {
   }
 
   // Update theme mode and save it in storage
-  void updateTheme(ThemeMode themeMode)async {
+  void updateTheme(ThemeMode themeMode) async {
     state = themeMode;
     await CurrentThemeSetting().update(themeMode: themeMode);
   }

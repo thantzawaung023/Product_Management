@@ -29,7 +29,7 @@ class UserDetailPage extends HookConsumerWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title:Text(localizations.userInfo),
+        title: Text(localizations.userInfo),
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         actions: [
           IconButton(
@@ -137,8 +137,8 @@ class UserDetailPage extends HookConsumerWidget {
           children: [
             _buildDetailRow(context, localizations.name, userData.name),
             _buildDetailRow(context, localizations.email, userData.email),
-            _buildDetailRow(
-                context, localizations.addressName, userData.address?.name ?? 'N/A'),
+            _buildDetailRow(context, localizations.addressName,
+                userData.address?.name ?? 'N/A'),
             _buildDetailRow(context, localizations.addressLocation,
                 userData.address?.location ?? 'N/A'),
             _buildDetailRow(

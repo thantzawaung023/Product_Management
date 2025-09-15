@@ -109,7 +109,7 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
           isLoading: false,
           isSuccess: true, // Indicate login success
         );
-      }else{
+      } else {
         throw Exception("Failed to sign in with Google. User is null.");
       }
     } catch (e) {

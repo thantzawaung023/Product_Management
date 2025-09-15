@@ -10,7 +10,6 @@ class LogoutButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authNotifier = ref.watch(authNotifierProvider.notifier);
     return ElevatedButton(
-      
         onPressed: () {
           authNotifier.signOut();
           Navigator.pushReplacement(
@@ -18,6 +17,6 @@ class LogoutButton extends ConsumerWidget {
             MaterialPageRoute(builder: (context) => const LoginPage()),
           );
         },
-        child:const Text('Logout'));
+        child: const Text('Logout'));
   }
 }
