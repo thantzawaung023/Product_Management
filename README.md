@@ -20,6 +20,10 @@ fvm releases
 fvm install 3.24.3
 
 fvm use 3.24.3
+
+flutter clean
+
+fvm flutter pub get
 ```
 
 ### Running Build Runner for Code Generation
