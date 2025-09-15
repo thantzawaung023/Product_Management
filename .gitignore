@@ -47,4 +47,3 @@ app.*.map.json
 # api_keys.prod.json
 
 # FVM Version Cache
-.fvm/
