@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:product_management/config/config.dart';
 import 'package:product_management/data/entities/address/address.dart';
@@ -230,6 +231,7 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
   Future<void> deleteAccount({
     required String? password,
     required String profileUrl,
+    required WidgetRef ref,
   }) async {
     try {
       final currentUser = auth.FirebaseAuth.instance.currentUser!;
@@ -249,8 +251,25 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
           ),
         );
       } else if (providerId.contains('google')) {
-        final provider = auth.GoogleAuthProvider();
-        await currentUser.reauthenticateWithProvider(provider);
+        // final provider = auth.GoogleAuthProvider();
+        // await currentUser.reauthenticateWithProvider(provider);
+        final googleSignIn = GoogleSignIn();
+        var googleUser = await googleSignIn.signInSilently();
+        if (googleUser == null) {
+          googleUser = await googleSignIn.signIn();
+          if (googleUser == null) {
+            // user cancelled sign-in
+            logger.w("Google sign-in cancelled by user.");
+            return;
+          }
+        }
+
+        final googleAuth = await googleUser.authentication;
+        final credential = auth.GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+        await currentUser.reauthenticateWithCredential(credential);
       }
 
       // Delete user data from Firestore

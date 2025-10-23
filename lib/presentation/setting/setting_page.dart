@@ -63,20 +63,22 @@ class SettingPage extends HookConsumerWidget {
             await todoListStateNotifier.deleteTodoByUser(user.email);
             // Perform account deletion
             await authStateNotifier.deleteAccount(
-                password: passwordInputController.text,
-                profileUrl: user.profile ?? '');
+              password: passwordInputController.text,
+              profileUrl: user.profile ?? '',
+              ref: ref,
+            );
 
             // After successful deletion, navigate to login
             if (!context.mounted) return;
 
             // Use addPostFrameCallback to navigate after the build phase
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const LoginPage()),
-                (route) => false, // Remove all previous routes from the stack
-              );
-            });
+            // WidgetsBinding.instance.addPostFrameCallback((_) {
+            //   Navigator.pushAndRemoveUntil(
+            //     context,
+            //     MaterialPageRoute(builder: (context) => const LoginPage()),
+            //     (route) => false, // Remove all previous routes from the stack
+            //   );
+            // });
           } on Exception catch (e) {
             logger.e("Delete Error: $e");
             if (!context.mounted) return;
